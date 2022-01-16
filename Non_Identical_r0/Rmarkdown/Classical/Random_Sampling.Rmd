@@ -1,0 +1,170 @@
+---
+title: "Random_Sampling"
+author: "M.Amalan"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,fig.height = 7,fig.width = 20,message = FALSE,warning = FALSE)
+library(here)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(LaplacesDemon)
+library(linguisticsdown)
+library(viridis)
+library(compiler)
+library(ggpubr)
+
+# Cordeiro Error----
+Cordeiro<-function(XData,With_bias)
+{
+  p <- as.vector(invlogit(XData%*%as.vector(With_bias)))
+  W <- diag(p*(1-p))
+  inverse_term <- solve(t(XData)%*%W%*%XData)
+  
+  Term1 <- inverse_term%*%t(XData)%*%W
+  Term2 <- diag(diag(XData%*%(inverse_term)%*%t(XData))) %*% as.matrix(p-0.5)
+  
+  bias <- as.vector(Term1%*%Term2)
+  return(bias)
+}  
+Cordeiro<-cmpfun(Cordeiro)
+
+load(here("Non_Identical_r0","Generate_Big_Data","Scaled.RData"))
+
+P_list<-list()
+Temp_Plot<-list()
+
+Full_MSE<-list()
+Full_Bias<-list()
+Full_VAR<-list()
+Full_EMSE<-list()
+Full_Info<-list()
+```
+
+# Random Sampling
+
+```{r Load Data RM}
+for (j in 1:length(All_Models)) 
+{
+  Full_model<-glm(Y~.-1,data = as.data.frame(Original_Data[,colnames(Original_Data) %in% c("Y",All_Models[[j]]) ]),
+                  family = binomial)
+  Estimated_Vline<-data.frame("Theta"=c(paste0("Theta",0:length(All_Models[[j]][-1]))),
+                              "Values"=Full_model$coefficients)
+  Bias_Vline<-data.frame("Theta"=c(paste0("Theta",0:length(All_Models[[j]][-1]))),"Values"=0)
+  
+  load(here("Non_Identical_r0","Outputs","Classical","Random_Sampling",
+            paste0("Random_Sample_output_",j,".RData")))
+  
+  Est_Parameter<-as.data.frame(Est_Param_RandomSample)
+  colnames(Est_Parameter)<-c("Subsample_Size",paste0("Theta",0:length(All_Models[[j]][-1])))
+  
+  Utility<-as.data.frame(Utility_RandomSample) 
+  colnames(Utility)<-c("Subsample_Size",paste0(c("A","D"),"_optimality"))
+  
+  Est_Bias<-as.data.frame(Bias_RandomSample) 
+  colnames(Est_Bias)<-c("Subsample_Size",paste0("Theta",0:length(All_Models[[j]][-1])))
+  
+  remove(Est_Param_RandomSample,Utility_RandomSample,Bias_RandomSample)
+  
+  All_MSE<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  All_Bias<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  All_Bias_squared<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  
+  SS<-unique(Est_Parameter$Subsample_Size)
+  
+  for (i in 1:length(SS)) 
+  {
+    Real_Matrix<-matrix(rep(Estimated_Vline$Values,Replicates),nrow = Replicates,byrow = TRUE)
+    # Full SMSE
+    All_MSE[i,]<-cbind(SS[i],mean(rowMeans((Real_Matrix-Est_Parameter[Est_Parameter$Subsample_Size== SS[i],-1])^2)))
+    # Bias and Bias squared
+    All_Bias[i,]<-cbind(SS[i],mean(sqrt(rowSums((Est_Bias[Est_Bias$Subsample_Size== SS[i],-1])^2))))
+    All_Bias_squared[i,]<-cbind(SS[i],mean(rowSums((Est_Bias[Est_Bias$Subsample_Size== SS[i],-1])^2)))
+  }
+  
+  All_MSE<-data.frame("Subsample_Size"=All_MSE[,1],"MSE"=All_MSE[,2])
+  All_Bias<-data.frame("Subsample_Size"=All_Bias[,1],"mean_Bias"=All_Bias[,2])
+  All_Bias_squared<-data.frame("Subsample_Size"=All_Bias_squared[,1],"mean_Bias"=All_Bias_squared[,2])
+  
+  Full_MSE[[j]]<-All_MSE
+  Full_Bias[[j]]<-All_Bias
+  
+  # Summarise A- optimality
+  Utility %>%
+    dplyr::select(Subsample_Size,A_optimality) %>%
+    group_by(Subsample_Size) %>%
+    mutate(mean_Variance=mean(A_optimality))%>%
+    distinct(mean_Variance) %>% 
+    forestmangr::round_df(8)->All_VAR  
+  
+  Full_VAR[[j]]<-All_VAR
+
+  # Summarise D- optimality
+  Utility %>%
+    dplyr::select(Subsample_Size,D_optimality) %>%
+    group_by(Subsample_Size) %>%
+    mutate(mean_Info=mean(D_optimality))%>%
+    distinct(mean_Info) %>% 
+    forestmangr::round_df(8)->All_Info  
+  
+  Full_Info[[j]]<-All_Info
+  
+  # Summarise EMSE
+  inner_join(All_VAR,All_Bias_squared,by=c("Subsample_Size")) %>%
+    mutate(EMSE=mean_Variance+mean_Bias) %>%
+    select(Subsample_Size,EMSE)->All_EMSE
+  colnames(All_EMSE)<-c("Subsample_Size","EMSE")
+  
+  Full_EMSE[[j]]<-All_EMSE
+  
+  All_MSE %>%
+    ggplot(.,aes(x=Subsample_Size,y=MSE))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("SMSE")+ggtitle("SMSE Comparison")->p1
+  
+  All_VAR %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Variance))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("Mean Variance")+ggtitle("Estimated Variance Comparison")->p2
+  
+  All_Info %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Info))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("Average Information")+ggtitle("Estimated Model Information Comparison")->p3
+  
+  All_Bias %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Bias))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("Average Bias")+ggtitle("Estimated Bias Comparison")->p4
+  
+  All_EMSE %>%
+    ggplot(.,aes(x=Subsample_Size,y=EMSE))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("EMSE")+ggtitle("EMSE Comparison")->p5
+  
+  P_list[[j]]<-list(p1,p2,p3,p4,p5)
+  
+  ggarrange(plotlist = P_list[[j]],nrow = 1,common.legend = TRUE,legend="top")->Temp_Plot[[j]]
+  
+  annotate_figure(Temp_Plot[[j]],
+                  top = paste0("Covariates in the Model :",stringr::str_c(All_Models[[j]],collapse = ",")))->Print_Temp
+  
+  print(Print_Temp)
+}
+
+
+# Store the Results
+save(Full_MSE,Full_EMSE,Full_Bias,Full_VAR,Full_Info,
+     file = here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+                 "Random_Sampling.RData"))
+
+```
+

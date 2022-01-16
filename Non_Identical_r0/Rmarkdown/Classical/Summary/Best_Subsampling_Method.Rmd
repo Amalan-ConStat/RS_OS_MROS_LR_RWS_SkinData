@@ -1,0 +1,206 @@
+---
+title: "Best Sub-sampling Method"
+author: "M.Amalan"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,fig.height = 7,fig.width = 20,message = FALSE,warning = FALSE)
+library(here)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(LaplacesDemon)
+library(xtable)
+library(flextable)
+library(grid)
+library(cowplot)
+library(linguisticsdown)
+library(ggpubr)
+
+load(here("Non_Identical_r0","Generate_Big_Data","Scaled.RData"))
+
+P_list<-list()
+Temp_Plot<-list()
+
+remove(Original_Data,Choice,Nc_size,r0,Replicates,Subsample_Size)
+```
+
+# Complete Summary
+
+```{r load Data}
+for (j in 1:length(All_Models)) 
+{
+  # Random Sampling
+  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+            "Random_Sampling.RData"))
+  
+  RS_Bias<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_Bias[[j]][,1],
+                      "Bias"=Full_Bias[[j]][,2])
+  RS_EMSE<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_EMSE[[j]][,1],
+                      "EMSE"=Full_EMSE[[j]][,2])
+  RS_Info<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_Info[[j]][,1],
+                      "Info"=Full_Info[[j]][,2])
+  RS_MSE<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
+                     "MSE"=Full_MSE[[j]][,2])
+  RS_VAR<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_VAR[[j]][,1],
+                     "VAR"=Full_VAR[[j]][,2])
+  
+  # RE Random Sampling
+  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+            "RE_Random_Sampling.RData"))
+  
+  RE_RS_Bias<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_Bias[[j]][,1],
+                         "Bias"=Full_Bias[[j]][,2])
+  RE_RS_EMSE<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_EMSE[[j]][,1],
+                         "EMSE"=Full_EMSE[[j]][,2])
+  RE_RS_Info<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_Info[[j]][,1],
+                         "Info"=Full_Info[[j]][,2])
+  RE_RS_MSE<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
+                        "MSE"=Full_MSE[[j]][,2])
+  RE_RS_VAR<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_VAR[[j]][,1],
+                        "VAR"=Full_VAR[[j]][,2])
+  
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  
+  # OSMAC
+  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+            "OSMAC.RData"))
+  
+  ## mMSE
+  OSMAC_mMSE_Bias<-data.frame("Model"="OSMAC mMSE","Subsample_Size"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mMSE",2],
+                              "Bias"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_EMSE<-data.frame("Model"="OSMAC mMSE","Subsample_Size"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mMSE",2],
+                              "EMSE"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_Info<-data.frame("Model"="OSMAC mMSE","Subsample_Size"=Full_Info[[j]][Full_Info[[j]]$Type=="mMSE",2],
+                              "Info"=Full_Info[[j]][Full_Info[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_MSE<-data.frame("Model"="OSMAC mMSE","Subsample_Size"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mMSE",2],
+                             "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_VAR<-data.frame("Model"="OSMAC mMSE","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",2],
+                             "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",3])
+  
+  ## mVc
+  OSMAC_mVc_Bias<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mVc",2],
+                             "Bias"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mVc",3])
+  OSMAC_mVc_EMSE<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mVc",2],
+                             "EMSE"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mVc",3])
+  OSMAC_mVc_Info<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_Info[[j]][Full_Info[[j]]$Type=="mVc",2],
+                             "Info"=Full_Info[[j]][Full_Info[[j]]$Type=="mVc",3])
+  OSMAC_mVc_MSE<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mVc",2],
+                            "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mVc",3])
+  OSMAC_mVc_VAR<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",2],
+                            "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",3])
+  
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  
+  # OSMAC Model Free
+  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+            "OSMAC_MF_Full.RData"))
+  
+  ## mMSE
+  OSMAC_mMSE_MF_Bias<-data.frame("Model"="OSMAC mMSE Model Free","Subsample_Size"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mMSE",2],
+                                 "Bias"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_MF_EMSE<-data.frame("Model"="OSMAC mMSE Model Free","Subsample_Size"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mMSE",2],
+                                 "EMSE"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_MF_Info<-data.frame("Model"="OSMAC mMSE Model Free","Subsample_Size"=Full_Info[[j]][Full_Info[[j]]$Type=="mMSE",2],
+                                 "Info"=Full_Info[[j]][Full_Info[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_MF_MSE<-data.frame("Model"="OSMAC mMSE Model Free","Subsample_Size"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mMSE",2],
+                                "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_MF_VAR<-data.frame("Model"="OSMAC mMSE Model Free","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",2],
+                                "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",3])
+  
+  ## mVc
+  OSMAC_mVc_MF_Bias<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mVc",2],
+                                "Bias"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mVc",3])
+  OSMAC_mVc_MF_EMSE<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mVc",2],
+                                "EMSE"=Full_EMSE[[j]][Full_EMSE[[j]]$Type=="mVc",3])
+  OSMAC_mVc_MF_Info<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_Info[[j]][Full_Info[[j]]$Type=="mVc",2],
+                                "Info"=Full_Info[[j]][Full_Info[[j]]$Type=="mVc",3])
+  OSMAC_mVc_MF_MSE<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mVc",2],
+                               "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mVc",3])
+  OSMAC_mVc_MF_VAR<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",2],
+                               "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",3])
+  
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  
+  # All elements
+  All_Bias<-rbind(RS_Bias,RE_RS_Bias,
+                  OSMAC_mMSE_Bias,OSMAC_mVc_Bias,
+                  OSMAC_mMSE_MF_Bias,OSMAC_mVc_MF_Bias)
+  All_EMSE<-rbind(RS_EMSE,RE_RS_EMSE,
+                  OSMAC_mMSE_EMSE,OSMAC_mVc_EMSE,
+                  OSMAC_mMSE_MF_EMSE,OSMAC_mVc_MF_EMSE)
+  All_MSE<-rbind(RS_MSE,RE_RS_MSE,
+                 OSMAC_mMSE_MSE,OSMAC_mVc_MSE,
+                 OSMAC_mMSE_MF_MSE,OSMAC_mVc_MF_MSE)
+  All_Info<-rbind(RS_Info,RE_RS_Info,
+                  OSMAC_mMSE_Info,OSMAC_mVc_Info,
+                  OSMAC_mMSE_MF_Info,OSMAC_mVc_MF_Info)
+  All_VAR<-rbind(RS_VAR,RE_RS_VAR,
+                 OSMAC_mMSE_VAR,OSMAC_mVc_VAR,
+                 OSMAC_mMSE_MF_VAR,OSMAC_mVc_MF_VAR)
+  
+  All_Objects<-ls()
+  remove(list = All_Objects[startsWith(All_Objects,"OSMAC")])
+  remove(list = All_Objects[startsWith(All_Objects,"RS")])
+  remove(list = All_Objects[startsWith(All_Objects,"RE_RS")])
+  
+  # All models
+  Selected_All<-c("Random Sampling","RE Random Sampling",
+                  "OSMAC mMSE","OSMAC mVc",
+                  "OSMAC mMSE Model Free","OSMAC mVc Model Free")
+  Colors_All<-c("#1FA458","#CED10C",
+                "#F80000","#1E0BE3",
+                "#E25979","#52ABE2")
+  All_Bias$Model<-factor(All_Bias$Model,levels = Selected_All)
+  All_EMSE$Model<-factor(All_EMSE$Model,levels = Selected_All)
+  All_MSE$Model<-factor(All_MSE$Model,levels = Selected_All)
+  All_Info$Model<-factor(All_Info$Model,levels = Selected_All)
+  All_VAR$Model<-factor(All_VAR$Model,levels = Selected_All)
+  
+  All_MSE %>%
+    ggplot(.,aes(x=Subsample_Size,y=MSE,color=Model))+
+    geom_point()+geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    scale_color_manual(values = Colors_All)+
+    ylab("MSE")+ggtitle("MSE")->p1
+  
+  All_Info %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Info,color=Model))+
+    geom_point()+geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    scale_color_manual(values = Colors_All)+
+    ylab("Information")+ggtitle("Information")->p2
+  
+  All_Bias %>% 
+    ggplot(.,aes(x=Subsample_Size,y=Bias,color=Model))+
+    geom_point()+geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    scale_color_manual(values = Colors_All)+
+    ylab("Bias")+ggtitle("Bias")->p3
+  
+  All_EMSE %>%
+    ggplot(.,aes(x=Subsample_Size,y=EMSE,color=Model))+
+    geom_point()+geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    scale_color_manual(values = Colors_All)+
+    ylab("EMSE")+ggtitle("EMSE")->p4
+  
+  All_VAR %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Variance,color=Model))+
+    geom_point()+geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    scale_color_manual(values = Colors_All)+
+    ylab("Variance")+ggtitle("Variance")->p5
+  
+  P_list[[j]]<-list(p1,p2,p3,p4,p5)
+  
+  ggarrange(plotlist = P_list[[j]],nrow = 1,common.legend = TRUE,legend="top")->Temp_Plot[[j]]
+  
+  annotate_figure(Temp_Plot[[j]],
+                  top = paste0("Covariates in the Model :",stringr::str_c(All_Models[[j]],collapse = ",")))->print_Temp
+  
+  print(print_Temp)
+}
+```

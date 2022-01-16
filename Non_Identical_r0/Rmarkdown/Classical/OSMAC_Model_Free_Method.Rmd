@@ -1,0 +1,213 @@
+---
+title: "OSMAC_Model_Free_Method"
+author: "M.Amalan"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,fig.height = 7,fig.width = 20,message = FALSE,warning=FALSE)
+library(ggplot2)
+library(here)
+library(dplyr)
+library(tidyr)
+library(gganimate)
+library(LaplacesDemon)
+library(linguisticsdown)
+library(gganimate)
+library(viridis)
+library(compiler)
+library(data.table)
+library(rlist)
+# Cordeiro Error ----
+Cordeiro<-function(XData,With_bias)
+{
+  p <- as.vector(invlogit(XData%*%as.vector(With_bias)))
+  W <- diag(p*(1-p))
+  inverse_term <- solve(t(XData)%*%W%*%XData)
+  
+  Term1 <- inverse_term%*%t(XData)%*%W
+  Term2 <- diag(diag(XData%*%(inverse_term)%*%t(XData))) %*% as.matrix(p-0.5)
+  
+  bias <- as.vector(Term1%*%Term2)
+  return(bias)
+}  
+
+Cordeiro<-cmpfun(Cordeiro)
+
+file.copy(from = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC_Model_Free","Results",
+                      "OSMAC_MF_output_Full.RData"),
+          to = here("Non_Identical_r0","Outputs","Classical","OSMAC_Model_Free"),
+          overwrite = TRUE)
+
+load(here("Non_Identical_r0","Generate_Big_Data","Scaled.RData"))
+
+P_list<-list()
+Temp_Plot<-list()
+
+Full_MSE<-list()
+Full_Bias<-list()
+Full_VAR<-list()
+Full_EMSE<-list()
+Full_Info<-list()
+
+```
+
+# OSMAC Model Free Method
+
+```{r Load Data}
+for (j in 1:length(All_Models)) 
+{
+  Full_model<-glm(Y~.-1,data = as.data.frame(Original_Data[,colnames(Original_Data) %in% c("Y",All_Models[[j]]) ]),
+                  family = binomial)
+  Estimated_Vline<-data.frame("Theta"=c(paste0("Theta",0:length(All_Models[[j]][-1]))),
+                              "Values"=Full_model$coefficients)
+  Bias_Vline<-data.frame("Theta"=c(paste0("Theta",0:length(All_Models[[j]][-1]))),"Values"=0)
+  
+  load(here("Non_Identical_r0","Outputs","Classical","OSMAC_Model_Free","OSMAC_MF_output_Full.RData"))
+  
+  Est_Parameter<-dplyr::bind_rows(purrr::flatten(mget(paste0("Results_OSMAC_",j))))
+  
+  Est_Bias<-dplyr::bind_rows(purrr::flatten(mget(paste0("Bias_OSMAC_",j))))
+  
+  Utility<-dplyr::bind_rows(purrr::flatten(mget(paste0("Utility_OSMAC_",j))))
+  
+  colnames(Est_Parameter)<-colnames(Est_Bias)<-c("Type","Subsample_Size",
+                                                 paste0("Theta",0:length(All_Models[[j]][-1])))
+  colnames(Utility)<-c("Type","Subsample_Size","A_optimality","D_optimality")
+  
+  remove(list=paste0(c("Results_OSMAC_","Bias_OSMAC_","Utility_OSMAC_"),j))
+  
+  All_MSE<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  All_Bias<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  All_Bias_squared<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  
+  SS<-unique(Est_Parameter$Subsample_Size)
+  Type<-"mMSE"
+  
+  for (i in 1:length(unique(Est_Parameter$Subsample_Size))) 
+  {
+    Real_Matrix<-matrix(rep(Estimated_Vline$Values,Replicates),nrow = Replicates,byrow = TRUE)
+    # Full SMSE
+    All_MSE[i,]<-cbind(SS[i],mean(rowMeans((Real_Matrix-
+                                              Est_Parameter[Est_Parameter$Subsample_Size== SS[i] & 
+                                                              Est_Parameter$Type==Type ,-c(1,2)])^2)))
+    # Bias and Bias squared
+    All_Bias[i,]<-cbind(SS[i],mean(sqrt(rowSums((Est_Bias[Est_Bias$Subsample_Size== SS[i] & 
+                                                            Est_Parameter$Type==Type,-c(1,2)])^2))))
+    All_Bias_squared[i,]<-cbind(SS[i],mean(rowSums((Est_Bias[Est_Bias$Subsample_Size== SS[i]& 
+                                                               Est_Parameter$Type==Type,-c(1,2)])^2)))
+  }
+  
+  All_MSE_mMSE<-data.frame("Type"="mMSE","Subsample_Size"=All_MSE[,1],"MSE"=All_MSE[,2])
+  All_Bias_mMSE<-data.frame("Type"="mMSE","Subsample_Size"=All_Bias[,1],"mean_Bias"=All_Bias[,2])
+  All_Bias_squared_mMSE<-data.frame("Type"="mMSE","Subsample_Size"=All_Bias_squared[,1],
+                                    "mean_Bias"=All_Bias_squared[,2])
+  
+  All_MSE<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  All_Bias<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  All_Bias_squared<-matrix(NA,nrow = length(unique(Est_Parameter$Subsample_Size)),ncol = 2)
+  
+  SS<-unique(Est_Parameter$Subsample_Size)
+  Type<-"mVc"
+  
+  for (i in 1:length(unique(Est_Parameter$Subsample_Size))) 
+  {
+    Real_Matrix<-matrix(rep(Estimated_Vline$Values,Replicates),nrow = Replicates,byrow = TRUE)
+    # Full SMSE
+    All_MSE[i,]<-cbind(SS[i],mean(rowMeans((Real_Matrix-
+                                              Est_Parameter[Est_Parameter$Subsample_Size== SS[i] & 
+                                                              Est_Parameter$Type==Type ,-c(1,2)])^2)))
+    # Bias and Bias squared
+    All_Bias[i,]<-cbind(SS[i],mean(sqrt(rowSums((Est_Bias[Est_Bias$Subsample_Size== SS[i] & 
+                                                            Est_Parameter$Type==Type,-c(1,2)])^2))))
+    All_Bias_squared[i,]<-cbind(SS[i],mean(rowSums((Est_Bias[Est_Bias$Subsample_Size== SS[i]& 
+                                                               Est_Parameter$Type==Type,-c(1,2)])^2)))
+  }
+  
+  All_MSE_mVc<-data.frame("Type"="mVc","Subsample_Size"=All_MSE[,1],"MSE"=All_MSE[,2])
+  All_Bias_mVc<-data.frame("Type"="mVc","Subsample_Size"=All_Bias[,1],"mean_Bias"=All_Bias[,2])
+  All_Bias_squared_mVc<-data.frame("Type"="mVc","Subsample_Size"=All_Bias_squared[,1],
+                                   "mean_Bias"=All_Bias_squared[,2])
+  
+  All_MSE<-rbind.data.frame(All_MSE_mMSE,All_MSE_mVc)
+  All_Bias<-rbind.data.frame(All_Bias_mMSE,All_Bias_mVc)
+  All_Bias_squared<-rbind.data.frame(All_Bias_squared_mMSE,All_Bias_squared_mVc)
+  
+  Full_MSE[[j]]<-All_MSE
+  Full_Bias[[j]]<-All_Bias
+  
+  # Summarise A- optimality
+  Utility %>%
+    dplyr::select(Type,Subsample_Size,A_optimality) %>%
+    group_by(Type,Subsample_Size) %>%
+    mutate(mean_Variance=mean(A_optimality))%>%
+    distinct(mean_Variance) %>% 
+    forestmangr::round_df(8)->All_VAR  
+  
+  Full_VAR[[j]]<-All_VAR
+  
+  # Summarise D- optimality
+  Utility %>%
+    dplyr::select(Type,Subsample_Size,D_optimality) %>%
+    group_by(Type,Subsample_Size) %>%
+    mutate(mean_Info=mean(D_optimality))%>%
+    distinct(mean_Info) %>% 
+    forestmangr::round_df(8)->All_Info  
+  
+  Full_Info[[j]]<-All_Info
+   
+  # Summarise EMSE
+  inner_join(All_VAR,All_Bias_squared,by=c("Type","Subsample_Size")) %>%
+    mutate(EMSE=mean_Variance+mean_Bias) %>%
+    select(Type,Subsample_Size,EMSE)->All_EMSE
+  colnames(All_EMSE)<-c("Type","Subsample_Size","EMSE")
+  
+  Full_EMSE[[j]]<-All_EMSE
+  
+  All_MSE %>%
+    ggplot(.,aes(x=Subsample_Size,y=MSE,color=Type))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("SMSE")+ggtitle("SMSE Comparison")->p1
+  
+  All_VAR %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Variance,color=Type))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("Mean Variance")+ggtitle("Estimated Variance Comparison")->p2
+  
+  All_Info %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Info,color=Type))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("Average Information")+ggtitle("Estimated Model Information Comparison")->p3
+  
+  All_Bias %>%
+    ggplot(.,aes(x=Subsample_Size,y=mean_Bias,color=Type))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("Average Bias")+ggtitle("Estimated Bias Comparison")->p4
+  
+  All_EMSE %>%
+    ggplot(.,aes(x=Subsample_Size,y=EMSE,color=Type))+geom_point()+
+    geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    ylab("EMSE")+ggtitle("EMSE Comparison")->p5
+  
+  P_list[[j]]<-list(p1,p2,p3,p4,p5)
+  
+  ggarrange(plotlist = P_list[[j]],nrow = 1,common.legend = TRUE,legend="top")->Temp_Plot[[j]]
+  
+  annotate_figure(Temp_Plot[[j]],
+                  top = paste0("Covariates in the Model :",stringr::str_c(All_Models[[j]],collapse = ",")))->Print_Temp
+  
+  print(Print_Temp)
+}
+
+# Store the Results
+save(Full_MSE,Full_EMSE,Full_Bias,Full_VAR,Full_Info,
+     file = here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+                 "OSMAC_MF_Full.RData"))
+```
+
