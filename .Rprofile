@@ -1,3 +1,4 @@
+source("renv/activate.R")
 library(here)
 library(Zelig)
 library(compiler)
