@@ -69,8 +69,8 @@ for (j in 1:length(All_Models))
                                          'OSMAC mVc Model Free'="MROS mVc")
   
   # All Colors
-  Selected_All<-c("OS mMSE","MROS mMSE",
-                  "OS mVc","MROS mVc",
+  Selected_All<-c("OS mMSE","OS mVc",
+                  "MROS mMSE","MROS mVc",
                   "RS")
   Colors_All<-c("#88CCEE","#0033cc",
                 "#ff4d4d","#cc0000",
