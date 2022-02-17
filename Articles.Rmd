@@ -36,7 +36,7 @@ for (j in 1:length(All_Models))
   load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
             "Random_Sampling.RData"))
   
-  RS_MSE<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
+  RS_MSE<-data.frame("Method"="Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
                      "MSE"=Full_MSE[[j]][,2])
   remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
   
@@ -44,7 +44,7 @@ for (j in 1:length(All_Models))
   load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
             "RE_Random_Sampling.RData"))
   
-  RE_RS_MSE<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
+  RE_RS_MSE<-data.frame("Method"="RE Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
                         "MSE"=Full_MSE[[j]][,2])
   
   remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
@@ -53,7 +53,7 @@ for (j in 1:length(All_Models))
   load(here("Identical_r0","Summary","Classical","Data","Efficiency",
             "OSMAC.RData"))
   
-  colnames(Full_MSE[[j]])[3]<-colnames(RS_MSE)[3]
+  colnames(Full_MSE[[j]])<-colnames(RS_MSE)
   
   # All elements
   All_MSE<-rbind(RS_MSE,RE_RS_MSE,Full_MSE[[j]])
@@ -61,21 +61,27 @@ for (j in 1:length(All_Models))
   colnames(All_MSE)[3]<-"Estimated Values"
   
   Final_Data_Identical_r0<-cbind(Metric="MSE",All_MSE)
+  Final_Data_Identical_r0$Method<-recode(Final_Data_Identical_r0$Method,
+                                         'Random Sampling'="RS",
+                                         'OSMAC mMSE'="OS mMSE",
+                                         'OSMAC mVc'="OS mVc",
+                                         'OSMAC mMSE Model Free'="MROS mMSE",
+                                         'OSMAC mVc Model Free'="MROS mVc")
   
   # All Colors
-  Selected_All<-c("OSMAC mMSE","OSMAC mMSE Model Free",
-                  "OSMAC mVc","OSMAC mVc Model Free",
-                  "Random Sampling")
+  Selected_All<-c("OS mMSE","MROS mMSE",
+                  "OS mVc","MROS mVc",
+                  "RS")
   Colors_All<-c("#88CCEE","#0033cc",
                 "#ff4d4d","#cc0000",
                 "#006600")
   
   Final_Data<-Final_Data_Identical_r0
   
-  Model_Data[[j]]<-Final_Data[(Final_Data$Model %in% Selected_All) & (Final_Data$Metric == "MSE"),]
+  Model_Data[[j]]<-Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "MSE"),]
   
-  Final_Data[(Final_Data$Model %in% Selected_All) & (Final_Data$Metric == "MSE"),] %>%
-    ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Model))+
+  Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "MSE"),] %>%
+    ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method))+
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
     theme_light()+xlab("Sub sample size")+
@@ -86,9 +92,9 @@ for (j in 1:length(All_Models))
 Combined_MSE<-do.call(rbind,Model_Data)
 
 Combined_MSE %>%
-  group_by(Metric,Model,Subsample_Size) %>%
+  group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=Sum_MSE,color=Model))+
+  ggplot(.,aes(x=Subsample_Size,y=Sum_MSE,color=Method))+
   scale_x_continuous(labels =unique(Combined_MSE$Subsample_Size) ,
                        breaks =unique(Combined_MSE$Subsample_Size) )+
     geom_point(size=1.75)+geom_line(size=1)+
