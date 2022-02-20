@@ -49,7 +49,7 @@ for (i in 1:no_of_Variables)
 Subsample_Size<-2000; 
 r0<-Nc_size<-200; 
 Replicates <- 1000; 
-Choice <-100*seq(4,20,2)
+Choice <-100*seq(4,20,1)
 
 save(list = c("Original_Data","Subsample_Size","Replicates","Nc_size","r0","All_Models","Choice"),
      file=here("Identical_r0","Generate_Big_Data","Scaled.RData"))

@@ -7,12 +7,12 @@ library(matrixStats)
 enableJIT(1)
 
 # Load the Scaled Data----
-#load(here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Init.RData"))
-load(here("Init.RData"))
+load(here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Init.RData"))
+#load(here("Init.RData"))
 
 # Load the OSMAC Sample----
-#load(here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Run_OSMAC.RData"))
-load(here("Run_OSMAC.RData"))
+load(here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Run_OSMAC.RData"))
+#load(here("Run_OSMAC.RData"))
 
 # Generate for Random sample of 1000 different times ---
 ## Pi=MMSE and Pi=MVC Proportional probabilities ---

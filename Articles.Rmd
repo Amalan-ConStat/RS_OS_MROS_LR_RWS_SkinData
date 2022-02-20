@@ -100,7 +100,9 @@ Combined_MSE %>%
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
     theme_light()+xlab("Sub sample size")+
-    ylab("Summed SMSE")
+    ylab("Summed SMSE")+expand_limits(y = 0)+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
+    theme(panel.grid.minor.x = element_blank())
 
 ```
 
