@@ -84,14 +84,14 @@ Run_OSMAC<-function(Replicates,r1,r2,Y,X,Real_Data,N,Model,Iterator)
   
   save(list= c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"#,"Sample_OSMAC"
                ),
-       file = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+       file = here(#"Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
                    "Results",#Model,
                    paste0("OSMAC_output_",Iterator,".RData")))
 
-  save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"#,"Sample_OSMAC"
-                ),
-       file = here("Non_Identical_r0","Outputs","Classical","OSMAC",#Model,
-                   paste0("OSMAC_output_",Iterator,".RData")))
+  # save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"#,"Sample_OSMAC"
+  #               ),
+  #      file = here("Non_Identical_r0","Outputs","Classical","OSMAC",#Model,
+  #                  paste0("OSMAC_output_",Iterator,".RData")))
 }
 
 Run_OSMAC<-cmpfun(Run_OSMAC)
