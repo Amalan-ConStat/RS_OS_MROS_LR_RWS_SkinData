@@ -23,7 +23,7 @@ load(here("Identical_r0","Generate_Big_Data","Scaled.RData"))
 
 P_list<-list()
 Temp_Plot<-list()
-remove(Original_Data,Choice,Nc_Size,r0,Replicates,Subsample_Size)
+remove(Original_Data,Choice,Nc_size,r0,Replicates,Subsample_Size)
 ```
 
 
@@ -91,6 +91,19 @@ for (j in 1:length(All_Models))
 Combined_MSE<-do.call(rbind,Model_Data)
 
 Combined_MSE %>%
+  group_by(Metric,Method,Subsample_Size) %>%
+  summarise(Sum_MSE=sum(`Estimated Values`)) %>%
+  ggplot(.,aes(x=Subsample_Size,y=Sum_MSE,color=Method))+
+  scale_x_continuous(labels =unique(Combined_MSE$Subsample_Size),
+                       breaks =unique(Combined_MSE$Subsample_Size)) +
+    geom_point(size=1.75)+geom_line(size=1)+
+    scale_color_manual(values=Colors_All)+
+    theme_light()+xlab("Sub sample size")+
+    ylab("Summed SMSE")+expand_limits(y = 0)+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
+    theme(panel.grid.minor.x = element_blank())
+
+Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
   ggplot(.,aes(x=Subsample_Size,y=Sum_MSE,color=Method))+

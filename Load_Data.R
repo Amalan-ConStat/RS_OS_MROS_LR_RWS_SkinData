@@ -22,7 +22,6 @@ glm(Y~.-1,data=Original_Data[,-c(4,7)],family = "binomial")->Alternate_Model_2
 stepAIC(Alternate_Model_2)
 
 Full_Model$aic
-Alternate_Model$aic
 Alternate_Model_2$aic
 
 corrr::correlate(Original_Data[,c(3:5)])
@@ -56,6 +55,16 @@ save(list = c("Original_Data","Subsample_Size","Replicates","Nc_size","r0","All_
 
 save(list = c("Original_Data","Subsample_Size","Replicates","Nc_size","r0","All_Models","Choice"),
      file=here("Non_Identical_r0","Generate_Big_Data","Scaled.RData"))
+
+for (i in 1:length(All_Models)) 
+{
+  glm(Y~.,data = Original_Data[,c("Y",All_Models[[i]][-1])],family = "binomial")->Temp_Results
+  cat("Covariates :",All_Models[[i]],"\n")
+  cat("AIC:",AIC(Temp_Results),"\n")
+  cat("VIF:",car::vif(Temp_Results),"\n******\n")
+  
+  #https://bookdown.org/egarpor/SSS2-UC3M/logreg-modsel.html
+}
 
 rm(list = ls())
 
