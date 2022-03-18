@@ -1,7 +1,7 @@
 
-# RM_AM_MF_LR_RWS_SkinData
+# RS_OS_MROS_LR_RWS_SkinData
 
-### Real Model vs Assumed Model vs Model Free method for the Logistic Regression problems on Real World Subsampling methods 
+### ### Random Sampling vs Optimal Sub-sampling vs Model Robust Optimal Sub-sampling method for the Logistic Regression problems on Real World Subsampling methods 
 
 <!-- badges: start -->
 <!-- badges: end -->
