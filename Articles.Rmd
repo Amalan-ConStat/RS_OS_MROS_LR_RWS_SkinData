@@ -23,7 +23,7 @@ load(here("Identical_r0","Generate_Big_Data","Scaled.RData"))
 
 P_list<-list()
 Temp_Plot<-list()
-remove(Original_Data,Choice,Nc_size,r0,Replicates,Subsample_Size)
+remove(Original_Data,Choice,Nc_size,Replicates,Subsample_Size)
 ```
 
 
@@ -62,14 +62,16 @@ for (j in 1:length(All_Models))
   
   Final_Data_Identical_r0<-cbind(Metric="MSE",All_MSE)
   Final_Data_Identical_r0$Method<-recode(Final_Data_Identical_r0$Method,
-                                         'OSMAC mMSE'="OS mMSE",
-                                         'OSMAC mVc'="OS mVc",
-                                         'OSMAC mMSE Model Free'="MROS mMSE",
-                                         'OSMAC mVc Model Free'="MROS mVc")
+                                         'OSMAC mMSE'="Optimal Sub-sampling mMSE",
+                                         'OSMAC mVc'="Optimal Sub-sampling mVc",
+                                         'OSMAC mMSE Model Free'="Model Robust Optimal Sub-sampling mMSE",
+                                         'OSMAC mVc Model Free'="Model Robust Optimal Sub-sampling mVc")
   
   # All Colors
-  Selected_All<-c("OS mMSE","OS mVc",
-                  "MROS mMSE","MROS mVc",
+  Selected_All<-c("Optimal Sub-sampling mMSE",
+                  "Optimal Sub-sampling mVc",
+                  "Model Robust Optimal Sub-sampling mMSE",
+                  "Model Robust Optimal Sub-sampling mVc",
                   "Random Sampling")
   Colors_All<-c("#88CCEE","#0033cc",
                 "#ff4d4d","#cc0000",
@@ -90,6 +92,8 @@ for (j in 1:length(All_Models))
 
 Combined_MSE<-do.call(rbind,Model_Data)
 
+Combined_MSE$Subsample_Size<-Combined_MSE$Subsample_Size-r0
+
 Combined_MSE %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
@@ -98,10 +102,15 @@ Combined_MSE %>%
                        breaks =unique(Combined_MSE$Subsample_Size)) +
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
-    theme_light()+xlab("Sub sample size")+
+    theme_light()+
+    xlab(expression(paste(r[0],' = 200 and r')))+
     ylab("Summed SMSE")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    theme(panel.grid.minor.x = element_blank())
+    guides(colour = guide_legend(nrow = 2))+
+    theme(panel.grid.minor.x = element_blank(),
+          axis.title.x = element_text(color = "black",face = "bold",size = 12),
+          axis.title.y = element_text(color = "black",face = "bold",size = 12),
+          legend.position = "bottom")
 
 Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
   group_by(Metric,Method,Subsample_Size) %>%
@@ -111,10 +120,14 @@ Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
                        breaks =unique(Combined_MSE$Subsample_Size) )+
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
-    theme_light()+xlab("Sub sample size")+
+    theme_light()+
+    xlab(expression(paste(r[0],' = 100 and r')))+
     ylab("Summed SMSE")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    theme(panel.grid.minor.x = element_blank())
-
+    guides(colour = guide_legend(nrow = 2))+
+    theme(panel.grid.minor.x = element_blank(),
+          axis.title.x = element_text(color = "black",face = "bold",size = 12),
+          axis.title.y = element_text(color = "black",face = "bold",size = 12),
+          legend.position = "bottom")
 ```
 
