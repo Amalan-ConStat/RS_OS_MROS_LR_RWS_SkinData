@@ -112,6 +112,8 @@ Combined_MSE %>%
           axis.title.y = element_text(color = "black",face = "bold",size = 12),
           legend.position = "bottom")
 
+ggsave(filename = "RWA_LR_SkinData.pdf",dpi=300,width = 8,height = 6,units = "in")
+
 Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
