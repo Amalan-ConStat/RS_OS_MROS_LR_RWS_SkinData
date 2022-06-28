@@ -12,7 +12,7 @@ The main effects model includes two variables and rest of the models include eve
 
 ## Brief summary of how to run the setup
 
-Run files from 3 to 8 to obtain the results as in the paper.
+Run files from 3 to 7 to obtain the results as in the paper.
 
 1. Load_Data.R
 2. Setup_Data.R
