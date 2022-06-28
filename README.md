@@ -12,6 +12,8 @@ The main effects model includes two variables and rest of the models include eve
 
 ## Brief summary of how to run the setup
 
+Run files from 3 to 8 to obtain the results as in the paper.
+
 1. Load_Data.R
 2. Setup_Data.R
 3. OSMAC_Setup.R [Identical_r0]; Random_Sampling.R, RE_Random_Sampling_Setup.R, OSMAC_Setup.R and OSMAC_Model_Free_Setup.R [Non_Identical_r0]
