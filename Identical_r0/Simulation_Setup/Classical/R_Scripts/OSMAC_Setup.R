@@ -85,12 +85,12 @@ Run_OSMAC<-function(Replicates,r1,r2,Y,X,N,alpha,All_Combinations,All_Covariates
                                                                                "A_optimality","D_optimality")
     
     save(list= c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-         file = here(#"Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+         file = here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
                      "Results","Single_Model",paste0("OSMAC_output_",j,".RData")))
     
-    # save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-    #      file = here("Identical_r0","Outputs","Classical","OSMAC","Single_Model",
-    #                 paste0("OSMAC_output_",j,".RData")))
+    save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
+         file = here("Identical_r0","Outputs","Classical","OSMAC","Single_Model",
+                    paste0("OSMAC_output_",j,".RData")))
     
     # Model Free
     Final_param_mMSE<-do.call(rbind,Parameter_ModelFree_mMSE[[j]])
@@ -120,12 +120,12 @@ Run_OSMAC<-function(Replicates,r1,r2,Y,X,N,alpha,All_Combinations,All_Covariates
                                                                                "A_optimality","D_optimality")
     
     save(list= c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-         file = here(#"Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+         file = here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
                      "Results","ModelFree",paste0("OSMAC_output_",j,".RData")))
     
-    # save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-    #      file = here("Identical_r0","Outputs","Classical","OSMAC","ModelFree",
-    #                 paste0("OSMAC_output_",j,".RData")))
+    save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
+         file = here("Identical_r0","Outputs","Classical","OSMAC","ModelFree",
+                    paste0("OSMAC_output_",j,".RData")))
   }
   
 }

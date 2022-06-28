@@ -104,14 +104,14 @@ Run_OSMAC_MF<-function(Replicates,r1,r2,Y,X,alpha,All_Combinations,All_Covariate
   save(list= c(paste0("Results_OSMAC_",1:length(All_Combinations)),
                paste0("Bias_OSMAC_",1:length(All_Combinations)),
                paste0("Utility_OSMAC_",1:length(All_Combinations))),
-       file = here(#"Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC_Model_Free",
+       file = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC_Model_Free",
                    "Results",paste0("OSMAC_MF_output_",Name,".RData")))
 
-  # save(list = c(paste0("Results_OSMAC_",1:length(All_Combinations)),
-  #               paste0("Bias_OSMAC_",1:length(All_Combinations)),
-  #               paste0("Utility_OSMAC_",1:length(All_Combinations))),
-  #      file = here("Non_Identical_r0","Outputs","Classical","OSMAC_Model_Free",
-  #                  paste0("OSMAC_MF_output_",Name,".RData")))
+  save(list = c(paste0("Results_OSMAC_",1:length(All_Combinations)),
+                paste0("Bias_OSMAC_",1:length(All_Combinations)),
+                paste0("Utility_OSMAC_",1:length(All_Combinations))),
+       file = here("Non_Identical_r0","Outputs","Classical","OSMAC_Model_Free",
+                   paste0("OSMAC_MF_output_",Name,".RData")))
   
   # for (i in 1:length(All_Combinations)) 
   # {
