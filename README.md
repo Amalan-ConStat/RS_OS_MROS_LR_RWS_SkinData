@@ -25,3 +25,5 @@ Run files from 3 to 7 to obtain the results as in the paper.
 For a complete understanding of the Rproject setup refer Manual.md or Manual.html
 
 ![](Images/Brief_FullDiagram.png)
+
+* To ensure replicability the R package **renv** is used to maintain the package versions in this Rproject.
