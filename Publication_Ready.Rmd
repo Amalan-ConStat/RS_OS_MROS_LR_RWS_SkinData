@@ -315,7 +315,7 @@ Combined_MSE %>%
 Combined_Accuracy %>%
   #filter(Model != "Random Sampling") %>%
   group_by(Data,Metric,Model,Subsample_Size) %>%
-  summarise(Sum_Accuracy=sum(`Estimated Values`,na.rm = TRUE)) %>%
+  summarise(Sum_Accuracy=mean(`Estimated Values`,na.rm = TRUE)) %>%
   ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Model))+
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+

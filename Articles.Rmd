@@ -159,7 +159,7 @@ Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
 
 Combined_Accuracy %>%
   group_by(Metric,Method,Subsample_Size) %>%
-  summarise(Sum_Accuracy=sum(`Estimated Values`)) %>%
+  summarise(Sum_Accuracy=mean(`Estimated Values`)) %>%
   ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Method))+
   scale_x_continuous(labels =unique(Combined_Accuracy$Subsample_Size),
                        breaks =unique(Combined_Accuracy$Subsample_Size)) +
@@ -167,7 +167,7 @@ Combined_Accuracy %>%
     scale_color_manual(values=Colors_All)+
     theme_light()+
     xlab(expression(paste(r[0],' = 200 and r')))+
-    ylab("Summed Average Accuracy")+
+    ylab("Average Accuracy")+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
     guides(colour = guide_legend(nrow = 2))+
     theme(panel.grid.minor.x = element_blank(),
@@ -179,7 +179,7 @@ ggsave(filename = "RWA_LR_SkinData_Accuracy.pdf",dpi=300,width = 8,height = 6,un
 
 Combined_Accuracy[Combined_Accuracy$Method!="Random Sampling",] %>%
   group_by(Metric,Method,Subsample_Size) %>%
-  summarise(Sum_Accuracy=sum(`Estimated Values`)) %>%
+  summarise(Sum_Accuracy=mean(`Estimated Values`)) %>%
   ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Method))+
   scale_x_continuous(labels =unique(Combined_Accuracy$Subsample_Size) ,
                        breaks =unique(Combined_Accuracy$Subsample_Size) )+
@@ -187,7 +187,7 @@ Combined_Accuracy[Combined_Accuracy$Method!="Random Sampling",] %>%
     scale_color_manual(values=Colors_All)+
     theme_light()+
     xlab(expression(paste(r[0],' = 100 and r')))+
-    ylab("Summed Average Accuracy")+
+    ylab("Average Accuracy")+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
     guides(colour = guide_legend(nrow = 2))+
     theme(panel.grid.minor.x = element_blank(),
