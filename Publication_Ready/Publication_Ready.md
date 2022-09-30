@@ -1,19 +1,14 @@
-Publication Ready
-================
-Amalan
-February 20, 2022
+---
+title: "Publication Ready"
+author: "Amalan"
+date: 'September 30, 2022'
+output: github_document
+---
 
-![plot of chunk load Non Identical
-Data](Plots/load%20Non%20Identical%20Data-1.png)![plot of chunk load Non
-Identical Data](Plots/load%20Non%20Identical%20Data-2.png)![plot of
-chunk load Non Identical
-Data](Plots/load%20Non%20Identical%20Data-3.png)![plot of chunk load Non
-Identical Data](Plots/load%20Non%20Identical%20Data-4.png)![plot of
-chunk load Non Identical
-Data](Plots/load%20Non%20Identical%20Data-5.png)![plot of chunk load Non
-Identical Data](Plots/load%20Non%20Identical%20Data-6.png)![plot of
-chunk load Non Identical
-Data](Plots/load%20Non%20Identical%20Data-7.png)![plot of chunk load Non
-Identical Data](Plots/load%20Non%20Identical%20Data-8.png)![plot of
-chunk load Non Identical
-Data](Plots/load%20Non%20Identical%20Data-9.png)
+
+
+
+![plot of chunk load Non Identical Data](Plots/load Non Identical Data-1.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-2.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-3.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-4.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-5.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-6.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-7.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-8.png)
+
+![plot of chunk unnamed-chunk-1](Plots/unnamed-chunk-1-1.png)![plot of chunk unnamed-chunk-1](Plots/unnamed-chunk-1-2.png)
+

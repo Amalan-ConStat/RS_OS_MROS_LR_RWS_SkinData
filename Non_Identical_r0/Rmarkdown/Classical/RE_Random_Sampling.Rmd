@@ -42,11 +42,12 @@ Full_Bias<-list()
 Full_VAR<-list()
 Full_EMSE<-list()
 Full_Info<-list()
+Full_Accuracy<-list()
 ```
 
 # Random Sampling
 
-```{r Load Data RM}
+```{r Load Data RM,fig.width=24,fig.height=6}
 for (j in 1:length(All_Models)) 
 {
   Full_model<-glm(Y~.-1,data = as.data.frame(Original_Data[,colnames(Original_Data) %in% c("Y",All_Models[[j]]) ]),
@@ -120,6 +121,27 @@ for (j in 1:length(All_Models))
   
   Full_EMSE[[j]]<-All_EMSE
   
+  Full_Data<-as.matrix(Original_Data[,colnames(Original_Data) %in% c("Y",All_Models[[j]]) ])
+  Parameter_Data<-as.matrix(Est_Parameter[,-1])
+  Parameter<-Parameter_Data[1,]
+  
+  Predict_Logistic_Regression<-function(Parameter)
+  {
+    Estimates<-matrix(Parameter)
+    fitted_pi<-LaplacesDemon::invlogit(Full_Data[,-1]%*%Estimates)
+    fitted_response<-ifelse(fitted_pi > 0.5,1,0)
+    return(1-mean(fitted_response != Full_Data[,1]))
+  }
+  
+  Accuracy<-apply(Parameter_Data,1,Predict_Logistic_Regression)
+  
+  Accuracy_Data<-cbind.data.frame("Subsample_Size"=Est_Parameter[,1],Accuracy)
+  Accuracy_Data<-Accuracy_Data %>% 
+    group_by(Subsample_Size) %>%
+    summarize(Average_Accuracy=mean(Accuracy))
+  
+  Full_Accuracy[[j]]<-Accuracy_Data
+  
   All_MSE %>%
     ggplot(.,aes(x=Subsample_Size,y=MSE))+geom_point()+
     geom_line()+scale_colour_viridis_d()+
@@ -150,7 +172,12 @@ for (j in 1:length(All_Models))
     theme_light()+xlab("Sub sample size")+
     ylab("EMSE")+ggtitle("EMSE Comparison")->p5
   
-  P_list[[j]]<-list(p1,p2,p3,p4,p5)
+  Accuracy_Data %>% 
+    ggplot(.,aes(x=Subsample_Size,y=Average_Accuracy))+geom_point()+
+    geom_line()+theme_light()+xlab("Sub sample size")+
+    ylab("Average Accuracy")+ggtitle("Accuracy Comparison")->p6
+  
+  P_list[[j]]<-list(p1,p2,p3,p4,p5,p6)
   
   ggarrange(plotlist = P_list[[j]],nrow = 1,common.legend = TRUE,legend="top")->Temp_Plot[[j]]
   
@@ -161,7 +188,7 @@ for (j in 1:length(All_Models))
 }
 
 # Store the Results
-save(Full_MSE,Full_EMSE,Full_Bias,Full_VAR,Full_Info,
+save(Full_MSE,Full_EMSE,Full_Bias,Full_VAR,Full_Info,Full_Accuracy,
      file = here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
                  "RE_Random_Sampling.RData"))
 

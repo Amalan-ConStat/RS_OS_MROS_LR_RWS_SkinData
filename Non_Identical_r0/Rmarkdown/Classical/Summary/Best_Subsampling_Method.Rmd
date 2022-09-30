@@ -29,7 +29,7 @@ remove(Original_Data,Choice,Nc_size,r0,Replicates,Subsample_Size)
 
 # Complete Summary
 
-```{r load Data}
+```{r load Data,fig.width=14,fig.height=6}
 for (j in 1:length(All_Models)) 
 {
   # Random Sampling
@@ -46,6 +46,8 @@ for (j in 1:length(All_Models))
                      "MSE"=Full_MSE[[j]][,2])
   RS_VAR<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_VAR[[j]][,1],
                      "VAR"=Full_VAR[[j]][,2])
+  RS_ACC<-data.frame("Model"="Random Sampling","Subsample_Size"=Full_Accuracy[[j]][,1],
+                     "VAR"=Full_Accuracy[[j]][,2])
   
   # RE Random Sampling
   load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
@@ -61,8 +63,10 @@ for (j in 1:length(All_Models))
                         "MSE"=Full_MSE[[j]][,2])
   RE_RS_VAR<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_VAR[[j]][,1],
                         "VAR"=Full_VAR[[j]][,2])
+  RE_RS_ACC<-data.frame("Model"="RE Random Sampling","Subsample_Size"=Full_Accuracy[[j]][,1],
+                        "VAR"=Full_Accuracy[[j]][,2])
   
-  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # OSMAC
   load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
@@ -79,6 +83,8 @@ for (j in 1:length(All_Models))
                              "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mMSE",3])
   OSMAC_mMSE_VAR<-data.frame("Model"="OSMAC mMSE","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",2],
                              "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_ACC<-data.frame("Model"="OSMAC mMSE","Subsample_Size"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mMSE",2],
+                             "VAR"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mMSE",3])
   
   ## mVc
   OSMAC_mVc_Bias<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mVc",2],
@@ -91,8 +97,10 @@ for (j in 1:length(All_Models))
                             "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mVc",3])
   OSMAC_mVc_VAR<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",2],
                             "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",3])
+  OSMAC_mVc_ACC<-data.frame("Model"="OSMAC mVc","Subsample_Size"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mVc",2],
+                            "VAR"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mVc",3])
   
-  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # OSMAC Model Free
   load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
@@ -109,6 +117,8 @@ for (j in 1:length(All_Models))
                                 "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mMSE",3])
   OSMAC_mMSE_MF_VAR<-data.frame("Model"="OSMAC mMSE Model Free","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",2],
                                 "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mMSE",3])
+  OSMAC_mMSE_MF_ACC<-data.frame("Model"="OSMAC mMSE Model Free","Subsample_Size"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mMSE",2],
+                                "VAR"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mMSE",3])
   
   ## mVc
   OSMAC_mVc_MF_Bias<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_Bias[[j]][Full_Bias[[j]]$Type=="mVc",2],
@@ -121,8 +131,10 @@ for (j in 1:length(All_Models))
                                "MSE"=Full_MSE[[j]][Full_MSE[[j]]$Type=="mVc",3])
   OSMAC_mVc_MF_VAR<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",2],
                                "VAR"=Full_VAR[[j]][Full_VAR[[j]]$Type=="mVc",3])
+  OSMAC_mVc_MF_ACC<-data.frame("Model"="OSMAC mVc Model Free","Subsample_Size"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mVc",2],
+                               "VAR"=Full_Accuracy[[j]][Full_Accuracy[[j]]$Type=="mVc",3])
   
-  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # All elements
   All_Bias<-rbind(RS_Bias,RE_RS_Bias,
@@ -140,6 +152,9 @@ for (j in 1:length(All_Models))
   All_VAR<-rbind(RS_VAR,RE_RS_VAR,
                  OSMAC_mMSE_VAR,OSMAC_mVc_VAR,
                  OSMAC_mMSE_MF_VAR,OSMAC_mVc_MF_VAR)
+  All_ACC<-rbind(RS_ACC,RE_RS_ACC,
+                 OSMAC_mMSE_ACC,OSMAC_mVc_ACC,
+                 OSMAC_mMSE_MF_ACC,OSMAC_mVc_MF_ACC)
   
   All_Objects<-ls()
   remove(list = All_Objects[startsWith(All_Objects,"OSMAC")])
@@ -158,6 +173,7 @@ for (j in 1:length(All_Models))
   All_MSE$Model<-factor(All_MSE$Model,levels = Selected_All)
   All_Info$Model<-factor(All_Info$Model,levels = Selected_All)
   All_VAR$Model<-factor(All_VAR$Model,levels = Selected_All)
+  All_ACC$Model<-factor(All_ACC$Model,levels = Selected_All)
   
   All_MSE %>%
     ggplot(.,aes(x=Subsample_Size,y=MSE,color=Model))+
@@ -194,7 +210,14 @@ for (j in 1:length(All_Models))
     scale_color_manual(values = Colors_All)+
     ylab("Variance")+ggtitle("Variance")->p5
   
-  P_list[[j]]<-list(p1,p2,p3,p4,p5)
+  All_ACC %>%
+    ggplot(.,aes(x=Subsample_Size,y=Average_Accuracy,color=Model))+
+    geom_point()+geom_line()+scale_colour_viridis_d()+
+    theme_light()+xlab("Sub sample size")+
+    scale_color_manual(values = Colors_All)+
+    ylab("Average Accuracy")+ggtitle("Accuracy")->p6
+  
+  P_list[[j]]<-list(p1,p2,p3,p4,p5,p6)
   
   ggarrange(plotlist = P_list[[j]],nrow = 1,common.legend = TRUE,legend="top")->Temp_Plot[[j]]
   

@@ -29,6 +29,7 @@ remove(Original_Data,Choice,Nc_size,Replicates,Subsample_Size)
 
 ```{r load Non Identical Data}
 Model_Data<-list()
+Model_Accuracy<-list()
 
 for (j in 1:length(All_Models)) 
 {
@@ -38,7 +39,10 @@ for (j in 1:length(All_Models))
   
   RS_MSE<-data.frame("Method"="Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
                      "MSE"=Full_MSE[[j]][,2])
-  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  RS_ACC<-data.frame("Method"="Random Sampling","Subsample_Size"=Full_Accuracy[[j]][,1],
+                     "MSE"=Full_Accuracy[[j]][,2])
+  
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # RE Random Sampling
   load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
@@ -46,21 +50,28 @@ for (j in 1:length(All_Models))
   
   RE_RS_MSE<-data.frame("Method"="RE Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
                         "MSE"=Full_MSE[[j]][,2])
+  RE_RS_ACC<-data.frame("Method"="RE Random Sampling","Subsample_Size"=Full_Accuracy[[j]][,1],
+                        "MSE"=Full_Accuracy[[j]][,2])
   
-  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR)
+  remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # OSMAC
   load(here("Identical_r0","Summary","Classical","Data","Efficiency",
             "OSMAC.RData"))
   
   colnames(Full_MSE[[j]])<-colnames(RS_MSE)
+  colnames(Full_Accuracy[[j]])<-colnames(RS_ACC)
   
   # All elements
   All_MSE<-rbind(RS_MSE,RE_RS_MSE,Full_MSE[[j]])
+  All_ACC<-rbind(RS_ACC,RE_RS_ACC,Full_Accuracy[[j]])
   
   colnames(All_MSE)[3]<-"Estimated Values"
+  colnames(All_ACC)[3]<-"Estimated Values"
   
-  Final_Data_Identical_r0<-cbind(Metric="MSE",All_MSE)
+  Final_Data_Identical_r0<-rbind(cbind(Metric="MSE",All_MSE),
+                                 cbind(Metric="Average Accuracy",All_ACC))
+  
   Final_Data_Identical_r0$Method<-recode(Final_Data_Identical_r0$Method,
                                          'OSMAC mMSE'="Optimal Sub-sampling mMSE",
                                          'OSMAC mVc'="Optimal Sub-sampling mVc",
@@ -83,6 +94,7 @@ for (j in 1:length(All_Models))
   Final_Data<-Final_Data_Identical_r0
   
   Model_Data[[j]]<-Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "MSE"),]
+  Model_Accuracy[[j]]<-Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "Average Accuracy"),]
   
   Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "MSE"),] %>%
     ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method))+
@@ -91,11 +103,21 @@ for (j in 1:length(All_Models))
     theme_light()+xlab("Sub sample size")+
     ggtitle("Simulated MSE")+
     ylab("Estimated Values")
+  
+  Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "Average Accuracy"),] %>%
+    ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method))+
+    geom_point(size=1.75)+geom_line(size=1)+
+    scale_color_manual(values=Colors_All)+
+    theme_light()+xlab("Sub sample size")+
+    ggtitle("Average Accuracy")+
+    ylab("Estimated Values")
 }
 
 Combined_MSE<-do.call(rbind,Model_Data)
+Combined_Accuracy<-do.call(rbind,Model_Accuracy)
 
 Combined_MSE$Subsample_Size<-Combined_MSE$Subsample_Size-r0
+Combined_Accuracy$Subsample_Size<-Combined_Accuracy$Subsample_Size-r0
 
 Combined_MSE %>%
   group_by(Metric,Method,Subsample_Size) %>%
@@ -129,6 +151,44 @@ Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
     xlab(expression(paste(r[0],' = 100 and r')))+
     ylab("Summed SMSE")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
+    guides(colour = guide_legend(nrow = 2))+
+    theme(panel.grid.minor.x = element_blank(),
+          axis.title.x = element_text(color = "black",face = "bold",size = 12),
+          axis.title.y = element_text(color = "black",face = "bold",size = 12),
+          legend.position = "bottom")
+
+Combined_Accuracy %>%
+  group_by(Metric,Method,Subsample_Size) %>%
+  summarise(Sum_Accuracy=sum(`Estimated Values`)) %>%
+  ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Method))+
+  scale_x_continuous(labels =unique(Combined_Accuracy$Subsample_Size),
+                       breaks =unique(Combined_Accuracy$Subsample_Size)) +
+    geom_point(size=1.75)+geom_line(size=1)+
+    scale_color_manual(values=Colors_All)+
+    theme_light()+
+    xlab(expression(paste(r[0],' = 200 and r')))+
+    ylab("Summed Average Accuracy")+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
+    guides(colour = guide_legend(nrow = 2))+
+    theme(panel.grid.minor.x = element_blank(),
+          axis.title.x = element_text(color = "black",face = "bold",size = 12),
+          axis.title.y = element_text(color = "black",face = "bold",size = 12),
+          legend.position = "bottom")
+
+ggsave(filename = "RWA_LR_SkinData_Accuracy.pdf",dpi=300,width = 8,height = 6,units = "in")
+
+Combined_Accuracy[Combined_Accuracy$Method!="Random Sampling",] %>%
+  group_by(Metric,Method,Subsample_Size) %>%
+  summarise(Sum_Accuracy=sum(`Estimated Values`)) %>%
+  ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Method))+
+  scale_x_continuous(labels =unique(Combined_Accuracy$Subsample_Size) ,
+                       breaks =unique(Combined_Accuracy$Subsample_Size) )+
+    geom_point(size=1.75)+geom_line(size=1)+
+    scale_color_manual(values=Colors_All)+
+    theme_light()+
+    xlab(expression(paste(r[0],' = 100 and r')))+
+    ylab("Summed Average Accuracy")+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
     guides(colour = guide_legend(nrow = 2))+
     theme(panel.grid.minor.x = element_blank(),
           axis.title.x = element_text(color = "black",face = "bold",size = 12),
