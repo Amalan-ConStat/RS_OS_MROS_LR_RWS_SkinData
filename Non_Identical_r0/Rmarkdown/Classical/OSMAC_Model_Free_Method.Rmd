@@ -167,7 +167,7 @@ for (j in 1:length(All_Models))
   
   Full_Data<-as.matrix(Original_Data[,colnames(Original_Data) %in% c("Y",All_Models[[j]]) ])
   Parameter_Data<-as.matrix(Est_Parameter[,-c(1,2)])
-  Parameter<-Parameter_Data[1,]
+  #Parameter<-Parameter_Data[1,]
   
   Predict_Logistic_Regression<-function(Parameter)
   {
@@ -177,7 +177,11 @@ for (j in 1:length(All_Models))
     return(1-mean(fitted_response != Full_Data[,1]))
   }
   
-  Accuracy<-apply(Parameter_Data,1,Predict_Logistic_Regression)
+  cl <- makeCluster(8)
+  clusterExport (cl, varlist = c("Full_Data"),envir = environment())
+  Accuracy<-parApply(cl=cl,X=Parameter_Data,MARGIN = 1,FUN = Predict_Logistic_Regression)
+  #Accuracy<-apply(Parameter_Data,1,Predict_Logistic_Regression)
+  stopCluster(cl)
   
   Accuracy_Data<-cbind.data.frame(Est_Parameter[,c(1,2)],Accuracy)
   Accuracy_Data<-Accuracy_Data %>% 
