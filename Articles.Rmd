@@ -119,6 +119,19 @@ Combined_Accuracy<-do.call(rbind,Model_Accuracy)
 Combined_MSE$Subsample_Size<-Combined_MSE$Subsample_Size-r0
 Combined_Accuracy$Subsample_Size<-Combined_Accuracy$Subsample_Size-r0
 
+Theme_special<-function()
+{
+  theme(axis.text.x = element_text(color = "black",size=12), #, vjust = 0.5
+        axis.text.y = element_text(color = "black",size=12), #, vjust = 0.5, hjust=1
+        strip.text = element_text(colour = "black",size = 12,face="bold"),
+        panel.grid.minor.x = element_blank(),
+        axis.title= element_text(color = "black",face = "bold",size = 12),
+        legend.text = element_text(color = "black", size=9),
+        legend.position = "bottom",
+        legend.margin=margin(0,0,0,0),
+        legend.box.margin=margin(-1,-1,-1,-1)) 
+}
+
 Combined_MSE %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
@@ -127,15 +140,11 @@ Combined_MSE %>%
                        breaks =unique(Combined_MSE$Subsample_Size)) +
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
-    theme_light()+
-    xlab(expression(paste(r[0],' = 200 and r')))+
+    theme_bw()+
+    xlab("r")+
     ylab("Summed SMSE")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+
-    theme(panel.grid.minor.x = element_blank(),
-          axis.title.x = element_text(color = "black",face = "bold",size = 12),
-          axis.title.y = element_text(color = "black",face = "bold",size = 12),
-          legend.position = "bottom")
+    guides(colour = guide_legend(nrow = 2))+Theme_special()
 
 ggsave(filename = "RWA_LR_SkinData.pdf",dpi=300,width = 8,height = 6,units = "in")
 
@@ -147,15 +156,11 @@ Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
                        breaks =unique(Combined_MSE$Subsample_Size) )+
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
-    theme_light()+
-    xlab(expression(paste(r[0],' = 100 and r')))+
+    theme_bw()+
+    xlab("r")+
     ylab("Summed SMSE")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+
-    theme(panel.grid.minor.x = element_blank(),
-          axis.title.x = element_text(color = "black",face = "bold",size = 12),
-          axis.title.y = element_text(color = "black",face = "bold",size = 12),
-          legend.position = "bottom")
+    guides(colour = guide_legend(nrow = 2))+Theme_special()
 
 Combined_Accuracy %>%
   group_by(Metric,Method,Subsample_Size) %>%
@@ -165,15 +170,11 @@ Combined_Accuracy %>%
                        breaks =unique(Combined_Accuracy$Subsample_Size)) +
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
-    theme_light()+
-    xlab(expression(paste(r[0],' = 200 and r')))+
-    ylab("Average Accuracy")+
+    theme_bw()+
+    xlab("r")+
+    ylab("Average Accuracy of Y")+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+
-    theme(panel.grid.minor.x = element_blank(),
-          axis.title.x = element_text(color = "black",face = "bold",size = 12),
-          axis.title.y = element_text(color = "black",face = "bold",size = 12),
-          legend.position = "bottom")
+    guides(colour = guide_legend(nrow = 2))+Theme_special()
 
 ggsave(filename = "RWA_LR_SkinData_Accuracy.pdf",dpi=300,width = 8,height = 6,units = "in")
 
@@ -185,14 +186,10 @@ Combined_Accuracy[Combined_Accuracy$Method!="Random Sampling",] %>%
                        breaks =unique(Combined_Accuracy$Subsample_Size) )+
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
-    theme_light()+
-    xlab(expression(paste(r[0],' = 100 and r')))+
-    ylab("Average Accuracy")+
+    theme_bw()+
+    xlab("r")+
+    ylab("Average Accuracy of Y")+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+
-    theme(panel.grid.minor.x = element_blank(),
-          axis.title.x = element_text(color = "black",face = "bold",size = 12),
-          axis.title.y = element_text(color = "black",face = "bold",size = 12),
-          legend.position = "bottom")
+    guides(colour = guide_legend(nrow = 2))+Theme_special()
 ```
 
