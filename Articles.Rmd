@@ -135,14 +135,14 @@ Theme_special<-function()
 Combined_MSE %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=Sum_MSE,color=Method))+
+  ggplot(.,aes(x=Subsample_Size,y=log(Sum_MSE),color=Method))+
   scale_x_continuous(labels =unique(Combined_MSE$Subsample_Size),
                        breaks =unique(Combined_MSE$Subsample_Size)) +
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
     theme_bw()+
     xlab("r")+
-    ylab("Summed SMSE")+expand_limits(y = 0)+
+    ylab("log(Summed SMSE)")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
     guides(colour = guide_legend(nrow = 2))+Theme_special()
 
@@ -151,14 +151,14 @@ ggsave(filename = "RWA_LR_SkinData.pdf",dpi=300,width = 8,height = 6,units = "in
 Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=Sum_MSE,color=Method))+
+  ggplot(.,aes(x=Subsample_Size,y=log(Sum_MSE),color=Method))+
   scale_x_continuous(labels =unique(Combined_MSE$Subsample_Size) ,
                        breaks =unique(Combined_MSE$Subsample_Size) )+
     geom_point(size=1.75)+geom_line(size=1)+
     scale_color_manual(values=Colors_All)+
     theme_bw()+
     xlab("r")+
-    ylab("Summed SMSE")+expand_limits(y = 0)+
+    ylab("log(Summed SMSE)")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
     guides(colour = guide_legend(nrow = 2))+Theme_special()
 
