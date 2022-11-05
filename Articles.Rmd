@@ -146,7 +146,8 @@ Combined_MSE %>%
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
     guides(colour = guide_legend(nrow = 2))+Theme_special()
 
-ggsave(filename = "RWA_LR_SkinData.pdf",dpi=300,width = 8,height = 6,units = "in")
+#ggsave(filename = "RWA_LR_SkinData.pdf",dpi=300,width = 8,height = 6,units = "in")
+ggsave(filename = "RWA_LR_SkinData.eps",device="eps",dpi=300,width = 8,height = 6,units = "in")
 
 Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
   group_by(Metric,Method,Subsample_Size) %>%
@@ -177,6 +178,7 @@ Combined_Accuracy %>%
     guides(colour = guide_legend(nrow = 2))+Theme_special()
 
 ggsave(filename = "RWA_LR_SkinData_Accuracy.pdf",dpi=300,width = 8,height = 6,units = "in")
+ggsave(filename = "RWA_LR_SkinData_Accuracy.eps",device="eps",dpi=300,width = 8,height = 6,units = "in")
 
 Combined_Accuracy[Combined_Accuracy$Method!="Random Sampling",] %>%
   group_by(Metric,Method,Subsample_Size) %>%
