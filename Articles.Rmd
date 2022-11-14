@@ -149,6 +149,22 @@ Combined_MSE %>%
 #ggsave(filename = "RWA_LR_SkinData.pdf",dpi=300,width = 8,height = 6,units = "in")
 ggsave(filename = "RWA_LR_SkinData.eps",device="eps",dpi=300,width = 8,height = 6,units = "in")
 
+Theme_special_1<-function()
+{
+  theme(axis.text.x = element_text(color = "black",size=18), #, vjust = 0.5
+        axis.text.y = element_text(color = "black",size=16), #, vjust = 0.5, hjust=1
+        strip.text = element_text(colour = "black",size = 16,face="bold"),
+        panel.grid.minor.x = element_blank(),
+        axis.title= element_text(color = "black",face = "bold",size = 15),
+        legend.text = element_text(color = "black", size=12),
+        legend.position = "bottom",
+        #legend.margin=margin(0,0,0,0),
+        #legend.box.margin=margin(-1,-1,-1,-1))
+        legend.key.width=unit(0.05,"npc"),
+        legend.margin = margin(), # pre-emptively set zero margins
+        legend.spacing.x = unit(0.2, "cm"))
+}
+
 Combined_MSE %>%
   filter(!(Method %in% c("Optimal Sub-sampling mVc","Model Robust Optimal Sub-sampling mVc"))) %>%
   group_by(Metric,Method,Subsample_Size) %>%
@@ -162,9 +178,9 @@ Combined_MSE %>%
     xlab("r")+
     ylab("log(Summed SMSE)")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 1))+Theme_special()
+    guides(colour = guide_legend(nrow = 1))+Theme_special_1()
 
-ggsave(filename = "Poster_RWA_LR_SkinData.eps",device="eps",dpi=300,width = 8,height = 6,units = "in")
+ggsave(filename = "Poster_RWA_LR_SkinData.eps",device="eps",dpi=300,width = 6,height = 8,units = "in")
 
 
 Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
