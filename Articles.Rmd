@@ -24,12 +24,12 @@ load(here("Identical_r0","Generate_Big_Data","Scaled.RData"))
 Theme_special<-function()
 {
   theme(legend.key.width=unit(1,"cm"),
-        axis.text.x = element_text(color = "black",size=12, angle = 45, hjust=0.75), #, vjust = 0.5
-        axis.text.y = element_text(color = "black",size=12), #, vjust = 0.5, hjust=1
-        strip.text = element_text(colour = "black",size = 12,face="bold"),
+        axis.text.x = element_text(color = "black",size=15, angle = 45, hjust=0.75), #, vjust = 0.5
+        axis.text.y = element_text(color = "black",size=15), #, vjust = 0.5, hjust=1
+        strip.text = element_text(colour = "black",size = 16,face="bold"),
         panel.grid.minor.x = element_blank(),
-        axis.title= element_text(color = "black",face = "bold",size = 12),
-        legend.text = element_text(color = "black", size=9),
+        axis.title= element_text(color = "black",face = "bold",size = 18),
+        legend.text = element_text(color = "black", size=16),
         legend.position = "bottom",
         legend.margin=margin(0,0,0,0),
         legend.box.margin=margin(-1,-1,-1,-1)) 
@@ -37,15 +37,15 @@ Theme_special<-function()
 
 Theme_special_1<-function()
 {
-  theme(axis.text.x = element_text(color = "black",size=15), #, vjust = 0.5
-        axis.text.y = element_text(color = "black",size=15), #, vjust = 0.5, hjust=1
-        strip.text = element_text(colour = "black",size = 16,face="bold"),
+  theme(axis.text.x = element_text(color = "black",size=7), 
+        axis.text.y = element_text(color = "black",size=7), 
+        strip.text = element_text(colour = "black",size = 7,face="bold"),
         panel.grid.minor.x = element_blank(),
-        axis.title= element_text(color = "black",face = "bold",size = 18),
-        legend.text = element_text(color = "black", size=14),
+        axis.title= element_text(color = "black",face = "bold",size = 9),
+        legend.text = element_text(color = "black", size=9),
         legend.position = "bottom",
         legend.key.width=unit(0.04,"npc"),
-        legend.margin = margin(), # pre-emptively set zero margins
+        legend.margin = margin(),
         legend.spacing.x = unit(0.2, "cm"))
 }
 
@@ -253,7 +253,7 @@ Combined_Accuracy %>%
   scale_shape_manual(values=ShapeType_All)+
   xlab("r")+ylab("Average Accuracy of Y")+
   scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
-  theme_bw()+guides(colour = guide_legend(nrow = 2))+Theme_special()
+  theme_bw()+Theme_special_1()+guides(colour = guide_legend(nrow = 2))
 
 ggsave(filename = here("Article_Plots","RWA_LR_Accuracy_SkinData.pdf"),
        dpi=300,width = 8,height = 6,units = "in")
@@ -273,7 +273,7 @@ Combined_MSE %>%
     xlab("r")+
     ylab("log(Summed SMSE)")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+Theme_special_1()
+    theme_bw()+Theme_special_1()+guides(colour = guide_legend(nrow = 2))
 
 ggsave(filename = here("Article_Plots","Poster_RWA_LR_SkinData.eps"),
        device="eps",dpi=300,width = 8,height = 6,units = "in")
