@@ -93,7 +93,7 @@ Model_Accuracy<-list()
 for (j in 1:length(All_Models)) 
 {
   # Random Sampling
-  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+  load(here("Non_Identical_r0","Summary","Data","Efficiency",
             "Random_Sampling.RData"))
   
   RS_MSE<-data.frame("Method"="Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
@@ -104,7 +104,7 @@ for (j in 1:length(All_Models))
   remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # RE Random Sampling
-  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+  load(here("Non_Identical_r0","Summary","Data","Efficiency",
             "RE_Random_Sampling.RData"))
   
   RE_RS_MSE<-data.frame("Method"="RE Random Sampling","Subsample_Size"=Full_MSE[[j]][,1],
@@ -115,7 +115,7 @@ for (j in 1:length(All_Models))
   remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # OSMAC
-  load(here("Identical_r0","Summary","Classical","Data","Efficiency",
+  load(here("Identical_r0","Summary","Data","Efficiency",
             "OSMAC.RData"))
   
   colnames(Full_MSE[[j]])<-colnames(RS_MSE)

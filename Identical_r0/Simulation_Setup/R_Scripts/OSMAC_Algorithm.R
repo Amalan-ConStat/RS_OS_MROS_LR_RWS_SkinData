@@ -115,15 +115,33 @@ AlgTwoStp <- function(r1=r1, r2=r2,Y,X,n,alpha,All_Combinations,All_Covariates){
       #Sample.mVc_MF[[a]]<-list()
     }
     
+    ## mVc
+    PI_Single.mVc <- lapply(1:length(All_Combinations), function(j){
+      PI.mVc<-sqrt((Y - P.prop[[j]])^2 * rowSums(X[,All_Covariates %in% All_Combinations[[j]] ]^2)) # Single Model 
+      return(PI.mVc/sum(PI.mVc))
+    })
+    PI_MF.mVc<-rowSums2(do.call(cbind,PI_Single.mVc)%*%diag(alpha)) # Model Free Model
+    
+    ## mMSE
+    p_Single.prop <- lapply(1:length(All_Combinations),function(j){
+      P.prop[[j]][idx.prop] # Single Model
+    })
+    w_Single.prop <- lapply(1:length(All_Combinations),function(j){
+      p_Single.prop[[j]] * (1 - p_Single.prop[[j]]) # Single Model
+    })
+    W_Single.prop <- lapply(1:length(All_Combinations),function(j){
+      solve(t(x.prop[[j]]) %*% (x.prop[[j]] * w_Single.prop[[j]] * pinv.prop)) # Single Model
+    })
+    PI_Single.mMSE <- lapply(1:length(All_Combinations),function(j){
+      Pi_mMSE<-sqrt((Y - P.prop[[j]])^2 * rowSums((X[,All_Covariates %in% All_Combinations[[j]] ]%*%
+                                                     W_Single.prop[[j]])^2)) # Single Model
+      return(Pi_mMSE/sum(Pi_mMSE))
+    })
+    PI_MF.mMSE<-rowSums2(do.call(cbind,PI_Single.mMSE)%*%diag(alpha))  # Model Free
+    
     for (i in 1:length(r2)) 
     {
-      ## mVC
-      PI_Single.mVc <- lapply(1:length(All_Combinations), function(j){
-        PI.mVc<-sqrt((Y - P.prop[[j]])^2 * rowSums(X[,All_Covariates %in% All_Combinations[[j]] ]^2)) # Single Model 
-        return(PI.mVc/sum(PI.mVc))
-      })
-      PI_MF.mVc<-rowSums2(do.call(cbind,PI_Single.mVc)%*%diag(alpha)) # Model Free Model
-        
+      ## mVc
       idx_Single.mVc <- lapply(1:length(All_Combinations), function(j){
         sample(1:n, r2[i]-r1, T, PI_Single.mVc[[j]]) # Single Model
       })
@@ -224,22 +242,6 @@ AlgTwoStp <- function(r1=r1, r2=r2,Y,X,n,alpha,All_Combinations,All_Covariates){
       }
       
       ## mMSE
-      p_Single.prop <- lapply(1:length(All_Combinations),function(j){
-        P.prop[[j]][idx.prop] # Single Model
-      })
-      w_Single.prop <- lapply(1:length(All_Combinations),function(j){
-        p_Single.prop[[j]] * (1 - p_Single.prop[[j]]) # Single Model
-      })
-      W_Single.prop <- lapply(1:length(All_Combinations),function(j){
-        solve(t(x.prop[[j]]) %*% (x.prop[[j]] * w_Single.prop[[j]] * pinv.prop)) # Single Model
-      })
-      PI_Single.mMSE <- lapply(1:length(All_Combinations),function(j){
-        Pi_mMSE<-sqrt((Y - P.prop[[j]])^2 * rowSums((X[,All_Covariates %in% All_Combinations[[j]] ]%*%
-                                                     W_Single.prop[[j]])^2)) # Single Model
-        return(Pi_mMSE/sum(Pi_mMSE))
-      })
-      PI_MF.mMSE<-rowSums2(do.call(cbind,PI_Single.mMSE)%*%diag(alpha))  # Model Free
-      
       idx_Single.mMSE <- lapply(1:length(All_Combinations),function(j){
         sample(1:n, r2[i]-r1, T, PI_Single.mMSE[[j]]) # Single Model
       }) 

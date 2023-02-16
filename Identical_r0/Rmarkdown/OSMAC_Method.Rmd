@@ -61,12 +61,12 @@ for (j in 1:length(All_Models))
                               "Values"=Full_model$coefficients)
   Bias_Vline<-data.frame("Theta"=c(paste0("Theta",0:length(All_Models[[j]][-1]))),"Values"=0)
   
-  file.copy(from = here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Results",
+  file.copy(from = here("Identical_r0","Simulation_Setup","Analysis","OSMAC","Results",
                         "Single_Model",paste0("OSMAC_output_",j,".RData")),
-            to = here("Identical_r0","Outputs","Classical","OSMAC","Single_Model"),
+            to = here("Identical_r0","Outputs","OSMAC","Single_Model"),
             overwrite = TRUE)
   
-  load(here("Identical_r0","Outputs","Classical","OSMAC","Single_Model",
+  load(here("Identical_r0","Outputs","OSMAC","Single_Model",
             paste0("OSMAC_output_",j,".RData")))
   
   Est_Parameter_SM<-rbind.data.frame(Results_OSMAC$mMSE_Output,
@@ -84,12 +84,12 @@ for (j in 1:length(All_Models))
   
   remove(Results_OSMAC,Bias_OSMAC,Utility_OSMAC)
   
-  file.copy(from = here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Results",
+  file.copy(from = here("Identical_r0","Simulation_Setup","Analysis","OSMAC","Results",
                         "ModelFree",paste0("OSMAC_output_",j,".RData")),
-            to = here("Identical_r0","Outputs","Classical","OSMAC","ModelFree"),
+            to = here("Identical_r0","Outputs","OSMAC","ModelFree"),
             overwrite = TRUE)
   
-  load(here("Identical_r0","Outputs","Classical","OSMAC","ModelFree",
+  load(here("Identical_r0","Outputs","OSMAC","ModelFree",
             paste0("OSMAC_output_",j,".RData")))
   
   Est_Parameter_MF<-rbind.data.frame(Results_OSMAC$mMSE_Output,
@@ -372,5 +372,5 @@ for (j in 1:length(All_Models))
 
 # Store the Results
 save(Full_MSE,Full_EMSE,Full_Bias,Full_VAR,Full_Info,Full_Accuracy,
-     file = here("Identical_r0","Summary","Classical","Data","Efficiency","OSMAC.RData"))
+     file = here("Identical_r0","Summary","Data","Efficiency","OSMAC.RData"))
 ```

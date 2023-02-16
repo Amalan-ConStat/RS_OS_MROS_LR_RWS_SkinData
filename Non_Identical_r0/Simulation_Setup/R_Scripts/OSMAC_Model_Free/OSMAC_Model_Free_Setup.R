@@ -4,7 +4,7 @@ library(LaplacesDemon)
 library(matrixStats)
 
 # Load the OSMAC algorithm
-source(here("Non_Identical_r0","Simulation_Setup","Classical","R_Scripts","OSMAC_Model_Free",
+source(here("Non_Identical_r0","Simulation_Setup","R_Scripts","OSMAC_Model_Free",
             "OSMAC_Algorithm_Model_Free.R"))
 
 OSMAC_MF<-cmpfun(OSMAC_MF)
@@ -104,23 +104,23 @@ Run_OSMAC_MF<-function(Replicates,r1,r2,Y,X,alpha,All_Combinations,All_Covariate
   save(list= c(paste0("Results_OSMAC_",1:length(All_Combinations)),
                paste0("Bias_OSMAC_",1:length(All_Combinations)),
                paste0("Utility_OSMAC_",1:length(All_Combinations))),
-       file = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC_Model_Free",
+       file = here("Non_Identical_r0","Simulation_Setup","Analysis","OSMAC_Model_Free",
                    "Results",paste0("OSMAC_MF_output_",Name,".RData")))
 
   save(list = c(paste0("Results_OSMAC_",1:length(All_Combinations)),
                 paste0("Bias_OSMAC_",1:length(All_Combinations)),
                 paste0("Utility_OSMAC_",1:length(All_Combinations))),
-       file = here("Non_Identical_r0","Outputs","Classical","OSMAC_Model_Free",
+       file = here("Non_Identical_r0","Outputs","OSMAC_Model_Free",
                    paste0("OSMAC_MF_output_",Name,".RData")))
   
   # for (i in 1:length(All_Combinations)) 
   # {
   #   save(list = c(paste0("Sample_OSMAC_",i)),
-  #        file = here("Non_Identical_r0","Simulation_Setup","Classical",Covariate_Path,"OSMAC_Model_Free",
+  #        file = here("Non_Identical_r0","Simulation_Setup",Covariate_Path,"OSMAC_Model_Free",
   #                    "Results",paste0("OSMAC_MF_Samples_output_",i,".RData")))
   #   
   #   save(list = c(paste0("Sample_OSMAC_",i)),
-  #        file = here("Non_Identical_r0","Outputs","Classical",Model_Path,"OSMAC_Model_Free",
+  #        file = here("Non_Identical_r0","Outputs",Model_Path,"OSMAC_Model_Free",
   #                    paste0("OSMAC_MF_Samples_output_",i,".RData")))
   # }
 }
@@ -129,11 +129,11 @@ Run_OSMAC_MF<-cmpfun(Run_OSMAC_MF)
 
 #Save the OSMAC Sample function----
 save(list =c("Run_OSMAC_MF","OSMAC_MF","getMLE","Cordeiro"),
-     file=here("Non_Identical_r0","Simulation_Setup","Classical","Analysis",
+     file=here("Non_Identical_r0","Simulation_Setup","Analysis",
                "OSMAC_Model_Free","Run_OSMAC.RData"))
 
 rm(list = ls())
 
 # Run the OSMAC sampling method ----
-source(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC_Model_Free",
+source(here("Non_Identical_r0","Simulation_Setup","Analysis","OSMAC_Model_Free",
             "Simulation_Results_OSMAC_Sampling.R"))

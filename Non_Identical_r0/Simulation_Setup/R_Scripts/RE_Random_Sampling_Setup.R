@@ -69,11 +69,11 @@ Run_RE_RandomSample<-cmpfun(Run_RE_RandomSample)
 
 # Save the Rare Event Random Sample function for No Correlated Covariate Data----
 save(Run_RE_RandomSample,
-     file=here("Non_Identical_r0","Simulation_Setup","Classical","Analysis",
+     file=here("Non_Identical_r0","Simulation_Setup","Analysis",
                "RE_Random_Sampling","RE_RandomSample.RData"))
 
 rm(list = ls())
 
 # Run the Rare Event Random sampling method ----
-source(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","RE_Random_Sampling",
+source(here("Non_Identical_r0","Simulation_Setup","Analysis","RE_Random_Sampling",
             "Simulation_Results_RE_Random_Sampling.R"))

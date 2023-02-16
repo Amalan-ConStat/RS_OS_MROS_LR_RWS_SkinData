@@ -35,9 +35,9 @@ Cordeiro<-function(XData,With_bias)
 
 Cordeiro<-cmpfun(Cordeiro)
 
-file.copy(from = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC_Model_Free","Results",
+file.copy(from = here("Non_Identical_r0","Simulation_Setup","Analysis","OSMAC_Model_Free","Results",
                       "OSMAC_MF_output_Full.RData"),
-          to = here("Non_Identical_r0","Outputs","Classical","OSMAC_Model_Free"),
+          to = here("Non_Identical_r0","Outputs","OSMAC_Model_Free"),
           overwrite = TRUE)
 
 load(here("Non_Identical_r0","Generate_Big_Data","Scaled.RData"))
@@ -64,7 +64,7 @@ for (j in 1:length(All_Models))
                               "Values"=Full_model$coefficients)
   Bias_Vline<-data.frame("Theta"=c(paste0("Theta",0:length(All_Models[[j]][-1]))),"Values"=0)
   
-  load(here("Non_Identical_r0","Outputs","Classical","OSMAC_Model_Free","OSMAC_MF_output_Full.RData"))
+  load(here("Non_Identical_r0","Outputs","OSMAC_Model_Free","OSMAC_MF_output_Full.RData"))
   
   Est_Parameter<-dplyr::bind_rows(purrr::flatten(mget(paste0("Results_OSMAC_",j))))
   
@@ -238,7 +238,7 @@ for (j in 1:length(All_Models))
 
 # Store the Results
 save(Full_MSE,Full_EMSE,Full_Bias,Full_VAR,Full_Info,Full_Accuracy,
-     file = here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+     file = here("Non_Identical_r0","Summary","Data","Efficiency",
                  "OSMAC_MF_Full.RData"))
 ```
 

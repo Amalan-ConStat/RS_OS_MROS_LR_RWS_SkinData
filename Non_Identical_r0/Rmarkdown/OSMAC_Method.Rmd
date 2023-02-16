@@ -60,7 +60,7 @@ for (j in 1:length(All_Models))
                               "Values"=Full_model$coefficients)
   Bias_Vline<-data.frame("Theta"=c(paste0("Theta",0:length(All_Models[[j]][-1]))),"Values"=0)
   
-  load(here("Non_Identical_r0","Outputs","Classical","OSMAC",paste0("OSMAC_output_",j,".RData")))
+  load(here("Non_Identical_r0","Outputs","OSMAC",paste0("OSMAC_output_",j,".RData")))
   
   Est_Parameter<-rbind.data.frame(Results_OSMAC$mMSE_Output,Results_OSMAC$mVc_Output)
   
@@ -234,7 +234,7 @@ for (j in 1:length(All_Models))
 
 # Store the Results
 save(Full_MSE,Full_EMSE,Full_Bias,Full_VAR,Full_Info,Full_Accuracy,
-     file = here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+     file = here("Non_Identical_r0","Summary","Data","Efficiency",
                  "OSMAC.RData"))
 ```
 

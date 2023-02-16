@@ -1,14 +1,8 @@
----
-title: "Publication Ready"
-author: "Amalan"
-date: 'October 01, 2022'
-output: github_document
----
+Publication Ready
+================
+Amalan
+February 16, 2023
 
+![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-1.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-2.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-3.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-4.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-5.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-6.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-7.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/load%20Non%20Identical%20Data-8.png)<!-- -->
 
-
-
-![plot of chunk load Non Identical Data](Plots/load Non Identical Data-1.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-2.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-3.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-4.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-5.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-6.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-7.png)![plot of chunk load Non Identical Data](Plots/load Non Identical Data-8.png)
-
-![plot of chunk unnamed-chunk-1](Plots/unnamed-chunk-1-1.png)![plot of chunk unnamed-chunk-1](Plots/unnamed-chunk-1-2.png)
-
+![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->![](C:/Work/PhD/Simulation/RS_vs_OS_vs_MROS/Logistic_Regression/Real_World_Subsampling/Skin_Data/Publication_Ready/Publication_Ready_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->

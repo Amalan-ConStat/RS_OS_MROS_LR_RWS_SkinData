@@ -3,7 +3,7 @@ library(compiler)
 library(LaplacesDemon)
 
 # Load the OSMAC algorithm
-source(here("Identical_r0","Simulation_Setup","Classical","R_Scripts","OSMAC_Algorithm.R"))
+source(here("Identical_r0","Simulation_Setup","R_Scripts","OSMAC_Algorithm.R"))
 
 AlgTwoStp<-cmpfun(AlgTwoStp)
 getMLE<-cmpfun(getMLE)
@@ -85,11 +85,11 @@ Run_OSMAC<-function(Replicates,r1,r2,Y,X,N,alpha,All_Combinations,All_Covariates
                                                                                "A_optimality","D_optimality")
     
     save(list= c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-         file = here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+         file = here("Identical_r0","Simulation_Setup","Analysis","OSMAC",
                      "Results","Single_Model",paste0("OSMAC_output_",j,".RData")))
     
     save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-         file = here("Identical_r0","Outputs","Classical","OSMAC","Single_Model",
+         file = here("Identical_r0","Outputs","OSMAC","Single_Model",
                     paste0("OSMAC_output_",j,".RData")))
     
     # Model Free
@@ -120,11 +120,11 @@ Run_OSMAC<-function(Replicates,r1,r2,Y,X,N,alpha,All_Combinations,All_Covariates
                                                                                "A_optimality","D_optimality")
     
     save(list= c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-         file = here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+         file = here("Identical_r0","Simulation_Setup","Analysis","OSMAC",
                      "Results","ModelFree",paste0("OSMAC_output_",j,".RData")))
     
     save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"),
-         file = here("Identical_r0","Outputs","Classical","OSMAC","ModelFree",
+         file = here("Identical_r0","Outputs","OSMAC","ModelFree",
                     paste0("OSMAC_output_",j,".RData")))
   }
   
@@ -134,10 +134,10 @@ Run_OSMAC<-cmpfun(Run_OSMAC)
 
 #Save the OSMAC Sample function----
 save(list =c("Run_OSMAC","AlgTwoStp","getMLE","Cordeiro"),
-     file=here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Run_OSMAC.RData"))
+     file=here("Identical_r0","Simulation_Setup","Analysis","OSMAC","Run_OSMAC.RData"))
 
 rm(list = ls())
 
 # Run the OSMAC sampling method ----
-source(here("Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+source(here("Identical_r0","Simulation_Setup","Analysis","OSMAC",
             "Simulation_Results_OSMAC_Sampling.R"))

@@ -3,7 +3,7 @@ library(compiler)
 library(LaplacesDemon)
 
 # Load the OSMAC algorithm
-source(here("Non_Identical_r0","Simulation_Setup","Classical","R_Scripts","OSMAC_Algorithm.R"))
+source(here("Non_Identical_r0","Simulation_Setup","R_Scripts","OSMAC_Algorithm.R"))
 
 AlgTwoStp<-cmpfun(AlgTwoStp)
 getMLE<-cmpfun(getMLE)
@@ -84,12 +84,12 @@ Run_OSMAC<-function(Replicates,r1,r2,Y,X,Real_Data,N,Model,Iterator)
   
   save(list= c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"#,"Sample_OSMAC"
                ),
-       file = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+       file = here("Non_Identical_r0","Simulation_Setup","Analysis","OSMAC",
                    "Results",paste0("OSMAC_output_",Iterator,".RData")))
 
   save(list = c("Results_OSMAC","Bias_OSMAC","Utility_OSMAC"#,"Sample_OSMAC"
                 ),
-       file = here("Non_Identical_r0","Outputs","Classical","OSMAC",
+       file = here("Non_Identical_r0","Outputs","OSMAC",
                    paste0("OSMAC_output_",Iterator,".RData")))
 }
 
@@ -97,11 +97,11 @@ Run_OSMAC<-cmpfun(Run_OSMAC)
 
 #Save the OSMAC Sample function----
 save(list =c("Run_OSMAC","AlgTwoStp","getMLE","Cordeiro"),
-     file=here("Non_Identical_r0","Simulation_Setup","Classical","Analysis",
+     file=here("Non_Identical_r0","Simulation_Setup","Analysis",
                "OSMAC","Run_OSMAC.RData"))
 
 rm(list = ls())
 
 # Run the OSMAC sampling method ----
-source(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC",
+source(here("Non_Identical_r0","Simulation_Setup","Analysis","OSMAC",
             "Simulation_Results_OSMAC_Sampling.R"))

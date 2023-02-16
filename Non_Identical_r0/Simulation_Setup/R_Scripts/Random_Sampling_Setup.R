@@ -71,11 +71,11 @@ Run_RandomSample<-cmpfun(Run_RandomSample)
 
 #Save the Random Sample function for Scaled Data ----
 save(Run_RandomSample,Cordeiro,
-     file=here("Non_Identical_r0","Simulation_Setup","Classical","Analysis",
+     file=here("Non_Identical_r0","Simulation_Setup","Analysis",
                "Random_Sampling","Run_RandomSample.RData"))
 
 rm(list = ls())
 
 # Run the Random sampling method ----
-source(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","Random_Sampling",
+source(here("Non_Identical_r0","Simulation_Setup","Analysis","Random_Sampling",
             "Simulation_Results_Random_Sampling.R"))

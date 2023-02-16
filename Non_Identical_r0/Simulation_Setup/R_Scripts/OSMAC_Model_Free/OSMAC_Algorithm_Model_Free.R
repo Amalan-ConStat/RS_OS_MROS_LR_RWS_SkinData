@@ -59,20 +59,19 @@ OSMAC_MF <- function(r1,r2,Y,X,n,alpha,combs,All_Covariates) {
   pinv.prop <- 1/PI.prop[idx.prop]
   
   beta.prop<-list()
-  beta.prop<-lapply(1:length(combs),function(i) {
-    getMLE(x=X[idx.prop,colnames(X) %in% combs[[i]]  ], y=y.prop, w=pinv.prop)})
+  beta.prop<-lapply(1:length(combs),function(j) {
+    getMLE(x=X[idx.prop,colnames(X) %in% combs[[j]]  ], y=y.prop, w=pinv.prop)})
    
-  for (i in 1:length(combs)) 
+  for (j in 1:length(combs)) 
   {
-    if (anyNA(beta.prop[[i]]$par))
+    if (anyNA(beta.prop[[j]]$par))
     {
       stop("There are NA or NaN values")
     }
   }
   
-  P.prop<-list()
-  P.prop<-lapply(1:length(combs), function(i)
-    1 - 1 / (1 + exp(X[,colnames(X) %in% combs[[i]]] %*% beta.prop[[i]]$par)))
+  P.prop<-lapply(1:length(combs), function(j)
+    1 - 1 / (1 + exp(X[,colnames(X) %in% combs[[j]]] %*% beta.prop[[j]]$par)))
   
   beta.mVc<-Utility_mVc<-Bias_mVc<-list()
   beta.mMSE<-Utility_mMSE<-Bias_mMSE<-list()
@@ -91,20 +90,35 @@ OSMAC_MF <- function(r1,r2,Y,X,n,alpha,combs,All_Covariates) {
   Sample.mMSE<-list()
   Sample.mVc<-list()
   
+  ## mVc
+  PI.mVc<-lapply(1:length(combs),function(j){
+    PI.mVc <- sqrt((Y - P.prop[[j]])^2 * rowSums(X[,All_Covariates %in% combs[[j]] ]^2)) #
+    return(PI.mVc / sum(PI.mVc))})
+  
+  PI.mVc<-matrix(unlist(PI.mVc),nrow = n,byrow = FALSE)
+  pjoin.mVc<-rowWeightedMeans(PI.mVc,w=alpha)
+  
+  ## mMSE
+  p.prop <-lapply(1:length(combs),function(a) P.prop[[a]][idx.prop])  #
+  w.prop <-lapply(1:length(combs),function(a) p.prop[[a]] * (1 - p.prop[[a]]))  #
+  
+  W.prop <-lapply(1:length(combs),function(a) {
+    solve(t(X[idx.prop,All_Covariates %in% combs[[a]] ]) %*% 
+            (X[idx.prop,All_Covariates %in% combs[[a]] ] * w.prop[[a]] * pinv.prop)) })   #
+  
+  PI.mMSE <-lapply(1:length(combs), function(a){
+    PI.mMSE<-sqrt((Y - P.prop[[a]])^2 * 
+                    rowSums((X[,All_Covariates %in% combs[[a]] ]%*%W.prop[[a]])^2)) 
+    return(PI.mMSE / sum(PI.mMSE)) } )   #
+  
+  PI.mMSE<-matrix(unlist(PI.mMSE),nrow = n,byrow = FALSE)
+  pjoin.mMSE<-rowWeightedMeans(PI.mMSE,w=alpha)
+  
   for (i in 1:length(r2)) 
   {
-    ## mVC
-    PI.mVc<-list()
-    PI.mVc<-lapply(1:length(combs),function(j){
-      PI.mVc <- sqrt((Y - P.prop[[j]])^2 * rowSums(X[,All_Covariates %in% combs[[j]] ]^2)) #
-      return(PI.mVc / sum(PI.mVc))})
-    
-    PI.mVc<-matrix(unlist(PI.mVc),nrow = n,byrow = FALSE)
-    pjoin.mVc<-rowWeightedMeans(PI.mVc,w=alpha)
-    
+    ## mVc
     idx.mVc <- sample(1:n, r2[i]-r1, T, pjoin.mVc ) # ##
     
-    fit.mVc<-list()
     fit.mVc<-lapply(1:length(combs),function(a){
       x.mVc <- X[c(idx.mVc, idx.prop),All_Covariates %in% combs[[a]] ] #
       y.mVc <- Y[c(idx.mVc, idx.prop)]
@@ -139,24 +153,8 @@ OSMAC_MF <- function(r1,r2,Y,X,n,alpha,combs,All_Covariates) {
     }
     
     ## mMSE
-    p.prop <-lapply(1:length(combs),function(a) P.prop[[a]][idx.prop])  #
-    w.prop <-lapply(1:length(combs),function(a) p.prop[[a]] * (1 - p.prop[[a]]))  #
-    
-    W.prop <-lapply(1:length(combs),function(a) {
-      solve(t(X[idx.prop,All_Covariates %in% combs[[a]] ]) %*% 
-             (X[idx.prop,All_Covariates %in% combs[[a]] ] * w.prop[[a]] * pinv.prop)) })   #
-    
-    PI.mMSE <-lapply(1:length(combs), function(a){
-      PI.mMSE<-sqrt((Y - P.prop[[a]])^2 * 
-                      rowSums((X[,All_Covariates %in% combs[[a]] ]%*%W.prop[[a]])^2)) 
-      return(PI.mMSE / sum(PI.mMSE)) } )   #
-    
-    PI.mMSE<-matrix(unlist(PI.mMSE),nrow = n,byrow = FALSE)
-    pjoin.mMSE<-rowWeightedMeans(PI.mMSE,w=alpha)
-    
     idx.mMSE <- sample(1:n, r2[i]-r1, T, pjoin.mMSE)
     
-    fit.mMSE<-list()
     fit.mMSE<-lapply(1:length(combs),function(a){
       x.mMSE <- X[c(idx.mMSE, idx.prop),All_Covariates %in% combs[[a]] ] #
       y.mMSE <- Y[c(idx.mMSE, idx.prop)]

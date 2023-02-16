@@ -1,31 +1,26 @@
 library(here)
-library(ezknitr)
 library(rmarkdown)
 
 # Random Sampling ----
-ezknit(file=here("Non_Identical_r0","Rmarkdown","Classical","Random_Sampling.Rmd"),
-       out_dir=here("Non_Identical_r0","htmloutputs","Classical","Random_Sampling"),
-       fig_dir = c("Plots"),
-       verbose = TRUE,keep_md = FALSE)
-open_output_dir()
+render(input=here("Non_Identical_r0","Rmarkdown","Random_Sampling.Rmd"),
+       output_file = "Best_Subsampling_Method",
+       output_format = "html_document",
+       output_dir=here("Non_Identical_r0","htmloutputs","Random_Sampling"))
 
 # Rare Event Random Sampling ----
-ezknit(file=here("Non_Identical_r0","Rmarkdown","Classical","RE_Random_Sampling.Rmd"),
-       out_dir=here("Non_Identical_r0","htmloutputs","Classical","RE_Random_Sampling"),
-       fig_dir = c("Plots"),
-       verbose = TRUE,keep_md = FALSE)
-open_output_dir()
+render(input=here("Non_Identical_r0","Rmarkdown","RE_Random_Sampling.Rmd"),
+       output_file = "Best_Subsampling_Method",
+       output_format = "html_document",
+       output_dir=here("Non_Identical_r0","htmloutputs","RE_Random_Sampling"))
 
 # OSMAC Method ----
-ezknit(file=here("Non_Identical_r0","Rmarkdown","Classical","OSMAC_Method.Rmd"),
-       out_dir=here("Non_Identical_r0","htmloutputs","Classical","OSMAC"),
-       fig_dir = c("Plots"),
-       verbose = TRUE,keep_md = FALSE)
-open_output_dir()
+render(input=here("Non_Identical_r0","Rmarkdown","OSMAC_Method.Rmd"),
+       output_file = "Best_Subsampling_Method",
+       output_format = "html_document",
+       output_dir=here("Non_Identical_r0","htmloutputs","OSMAC"))
 
 # OSMAC Model Free Method ----
-ezknit(file=here("Non_Identical_r0","Rmarkdown","Classical","OSMAC_Model_Free_Method.Rmd"),
-       out_dir=here("Non_Identical_r0","htmloutputs","Classical","OSMAC_Model_Free"),
-       fig_dir = c("Plots"),
-       verbose = TRUE,keep_md = FALSE)
-open_output_dir()
+render(input=here("Non_Identical_r0","Rmarkdown","OSMAC_Model_Free_Method.Rmd"),
+       output_file = "Best_Subsampling_Method",
+       output_format = "html_document",
+       output_dir=here("Non_Identical_r0","htmloutputs","OSMAC_Model_Free"))

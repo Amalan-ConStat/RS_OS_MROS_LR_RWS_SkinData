@@ -33,7 +33,7 @@ remove(Original_Data,Choice,Nc_size,r0,Replicates,Subsample_Size)
 for (j in 1:length(All_Models)) 
 {
   # Random Sampling
-  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+  load(here("Non_Identical_r0","Summary","Data","Efficiency",
             "Random_Sampling.RData"))
   
   RS_Bias<-data.frame(Model="Random Sampling",Subsample_Size=Full_Bias[[j]][,1],
@@ -50,7 +50,7 @@ for (j in 1:length(All_Models))
                      "VAR"=Full_Accuracy[[j]][,2])
   
   # RE Random Sampling
-  load(here("Non_Identical_r0","Summary","Classical","Data","Efficiency",
+  load(here("Non_Identical_r0","Summary","Data","Efficiency",
             "RE_Random_Sampling.RData"))
   
   RE_RS_Bias<-data.frame(Model="RE Random Sampling",Subsample_Size=Full_Bias[[j]][,1],
@@ -69,7 +69,7 @@ for (j in 1:length(All_Models))
   remove(Full_Bias,Full_EMSE,Full_MSE,Full_Info,Full_VAR,Full_Accuracy)
   
   # OSMAC
-  load(here("Identical_r0","Summary","Classical","Data","Efficiency","OSMAC.RData"))
+  load(here("Identical_r0","Summary","Data","Efficiency","OSMAC.RData"))
   
   OSMAC_Bias<-as.data.frame(Full_Bias[[j]]); colnames(OSMAC_Bias)[3]<-colnames(RS_Bias)[3]
   OSMAC_EMSE<-as.data.frame(Full_EMSE[[j]]); colnames(OSMAC_EMSE)[3]<-colnames(RS_EMSE)[3]
