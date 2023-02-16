@@ -21,9 +21,68 @@ library(ggpubr)
 
 load(here("Identical_r0","Generate_Big_Data","Scaled.RData"))
 
+Theme_special<-function()
+{
+  theme(legend.key.width=unit(1,"cm"),
+        axis.text.x = element_text(color = "black",size=12, angle = 45, hjust=0.75), #, vjust = 0.5
+        axis.text.y = element_text(color = "black",size=12), #, vjust = 0.5, hjust=1
+        strip.text = element_text(colour = "black",size = 12,face="bold"),
+        panel.grid.minor.x = element_blank(),
+        axis.title= element_text(color = "black",face = "bold",size = 12),
+        legend.text = element_text(color = "black", size=9),
+        legend.position = "bottom",
+        legend.margin=margin(0,0,0,0),
+        legend.box.margin=margin(-1,-1,-1,-1)) 
+}
+
+Theme_special_1<-function()
+{
+  theme(axis.text.x = element_text(color = "black",size=15), #, vjust = 0.5
+        axis.text.y = element_text(color = "black",size=15), #, vjust = 0.5, hjust=1
+        strip.text = element_text(colour = "black",size = 16,face="bold"),
+        panel.grid.minor.x = element_blank(),
+        axis.title= element_text(color = "black",face = "bold",size = 18),
+        legend.text = element_text(color = "black", size=14),
+        legend.position = "bottom",
+        legend.key.width=unit(0.04,"npc"),
+        legend.margin = margin(), # pre-emptively set zero margins
+        legend.spacing.x = unit(0.2, "cm"))
+}
+
+Covariate<-c("Data Model: x\u2081, x\u2082, x\u2083",
+             "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2",
+             "Data Model: x\u2081, x\u2082, x\u2083, (x\u2082)\u00B2",
+             "Data Model: x\u2081, x\u2082, x\u2083, (x\u2083)\u00B2",
+             "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2082)\u00B2",
+             "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2083)\u00B2",
+             "Data Model: x\u2081, x\u2082, x\u2083, (x\u2082)\u00B2, (x\u2083)\u00B2",
+             "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2082)\u00B2, (x\u2083)\u00B2")
+
+# All Colors
+Selected_All<-c("Model Robust subsampling mMSE",
+                "Model Robust subsampling mVc",
+                "Optimal subsampling mMSE",
+                "Optimal subsampling mVc",
+                "Random Sampling")
+
+# Colors_All<-c("#88CCEE","#0033cc",
+#               "#ff4d4d","#cc0000",
+#               "#006600")
+Colors_All<-c("darkgreen","green",
+              "#cc0000","#ff578a",
+              "black")
+                         
+LineType_All<-c("solid","dashed",
+                "dotted","dotdash",
+                "twodash")
+
+ShapeType_All<-c(8,1,
+                 4,3,
+                 16)
+
 P_list<-list()
 Temp_Plot<-list()
-remove(Original_Data,Choice,Nc_size,Replicates,Subsample_Size)
+remove(Original_Data,Choice,Nc_size,Subsample_Size)
 ```
 
 
@@ -77,40 +136,12 @@ for (j in 1:length(All_Models))
                                          'OSMAC mVc'="Optimal subsampling mVc",
                                          'OSMAC mMSE Model Free'="Model Robust subsampling mMSE",
                                          'OSMAC mVc Model Free'="Model Robust subsampling mVc")
-  
-  # All Colors
-  Selected_All<-c("Model Robust subsampling mMSE",
-                  "Model Robust subsampling mVc",
-                  "Optimal subsampling mMSE",
-                  "Optimal subsampling mVc",
-                  "Random Sampling")
-  # Colors_All<-c("#88CCEE","#0033cc",
-  #               "#ff4d4d","#cc0000",
-  #               "#006600")
-  Colors_All<-c("darkgreen","green",
-                "#cc0000","#ff578a",
-                "black")
-  
+    
   Final_Data<-Final_Data_Identical_r0
   
-  Model_Data[[j]]<-Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "MSE"),]
-  Model_Accuracy[[j]]<-Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "Average Accuracy"),]
-  
-  Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "MSE"),] %>%
-    ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method))+
-    geom_point(size=1.75)+geom_line(size=1)+
-    scale_color_manual(values=Colors_All)+
-    theme_light()+xlab("Sub sample size")+
-    ggtitle("Simulated MSE")+
-    ylab("Estimated Values")
-  
-  Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "Average Accuracy"),] %>%
-    ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method))+
-    geom_point(size=1.75)+geom_line(size=1)+
-    scale_color_manual(values=Colors_All)+
-    theme_light()+xlab("Sub sample size")+
-    ggtitle("Average Accuracy")+
-    ylab("Estimated Values")
+  Model_Data[[j]]<-cbind("Covariate"=Covariate[j],Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "MSE"),]) 
+  Model_Accuracy[[j]]<-cbind("Covariate"=Covariate[j],
+                             Final_Data[(Final_Data$Method %in% Selected_All) & (Final_Data$Metric == "Average Accuracy"),])
 }
 
 Combined_MSE<-do.call(rbind,Model_Data)
@@ -119,51 +150,115 @@ Combined_Accuracy<-do.call(rbind,Model_Accuracy)
 Combined_MSE$Subsample_Size<-Combined_MSE$Subsample_Size-r0
 Combined_Accuracy$Subsample_Size<-Combined_Accuracy$Subsample_Size-r0
 
-Theme_special<-function()
-{
-  theme(axis.text.x = element_text(color = "black",size=12), #, vjust = 0.5
-        axis.text.y = element_text(color = "black",size=12), #, vjust = 0.5, hjust=1
-        strip.text = element_text(colour = "black",size = 12,face="bold"),
-        panel.grid.minor.x = element_blank(),
-        axis.title= element_text(color = "black",face = "bold",size = 12),
-        legend.text = element_text(color = "black", size=9),
-        legend.position = "bottom",
-        legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-1,-1,-1,-1)) 
-}
+Combined_MSE$Covariate<-factor(Combined_MSE$Covariate,
+                               levels = c("Data Model: x\u2081, x\u2082, x\u2083",
+                                          "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2",
+                                          "Data Model: x\u2081, x\u2082, x\u2083, (x\u2082)\u00B2",
+                                          "Data Model: x\u2081, x\u2082, x\u2083, (x\u2083)\u00B2",
+                                          "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2082)\u00B2",
+                                          "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2083)\u00B2",
+                                          "Data Model: x\u2081, x\u2082, x\u2083, (x\u2082)\u00B2, (x\u2083)\u00B2",
+                                          "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2082)\u00B2, (x\u2083)\u00B2"),
+                               labels = c(expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]),
+                                          expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}),
+                                          expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[2]^{2}),
+                                          expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[3]^{2}),
+                                          expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}*", "*X[2]^{2}),
+                                          expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}*", "*X[3]^{2}),
+                                          expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[2]^{2}*", "*X[3]^{2}),
+                                          expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}*", "*X[2]^{2}*", "*X[3]^{2})))
+
+Combined_Accuracy$Covariate<-factor(Combined_Accuracy$Covariate,
+                                    levels = c("Data Model: x\u2081, x\u2082, x\u2083",
+                                               "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2",
+                                               "Data Model: x\u2081, x\u2082, x\u2083, (x\u2082)\u00B2",
+                                               "Data Model: x\u2081, x\u2082, x\u2083, (x\u2083)\u00B2",
+                                               "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2082)\u00B2",
+                                               "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2083)\u00B2",
+                                               "Data Model: x\u2081, x\u2082, x\u2083, (x\u2082)\u00B2, (x\u2083)\u00B2",
+                                               "Data Model: x\u2081, x\u2082, x\u2083, (x\u2081)\u00B2, (x\u2082)\u00B2, (x\u2083)\u00B2"),
+                                    labels = c(expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]),
+                                               expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}),
+                                               expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[2]^{2}),
+                                               expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[3]^{2}),
+                                               expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}*", "*X[2]^{2}),
+                                               expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}*", "*X[3]^{2}),
+                                               expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[2]^{2}*", "*X[3]^{2}),
+                                               expression("Data Model: "*X[1]*", "*X[2]*", "*X[3]*", "*X[1]^{2}*", "*X[2]^{2}*", "*X[3]^{2})))
+
+Combined_MSE %>%
+    ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method,shape=Method,linetype=Method))+
+    scale_x_continuous(labels = unique(Combined_MSE$Subsample_Size),
+                       breaks = unique(Combined_MSE$Subsample_Size))+
+    geom_point(size=1.25)+geom_line(size=0.75)+
+    scale_color_manual(values=Colors_All)+
+    scale_linetype_manual(values=LineType_All)+
+    scale_shape_manual(values=ShapeType_All)+
+    facet_wrap(~Covariate,scales = "free_y",ncol = 2,labeller = label_parsed)+
+    xlab("r")+ylab("SMSE")+expand_limits(y=0)+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
+    theme_bw()+Theme_special()+guides(colour = guide_legend(nrow = 2))
+
+ggsave(filename = here("Article_Plots","RWA_LR_ALL_SMSE_SkinData.pdf"),
+       dpi=300,width = 6*2,height = 6*4,units = "in")
+ggsave(filename = here("Article_Plots","RWA_LR_ALL_SMSE_SkinData.eps"),
+       device="eps",dpi=300,width = 6*2,height = 6*4,units = "in")
+
+Combined_Accuracy %>%
+    ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method,shape=Method,linetype=Method))+
+    scale_x_continuous(labels = unique(Combined_MSE$Subsample_Size),
+                       breaks = unique(Combined_MSE$Subsample_Size))+
+    geom_point(size=1.25)+geom_line(size=0.75)+
+    scale_color_manual(values=Colors_All)+
+    scale_linetype_manual(values=LineType_All)+
+    scale_shape_manual(values=ShapeType_All)+
+    facet_wrap(~Covariate,scales = "free_y",ncol = 2,labeller = label_parsed)+
+    xlab("r")+ylab("Accuracy of Y")+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
+    theme_bw()+Theme_special()+guides(colour = guide_legend(nrow = 2))
+      
+ggsave(filename = here("Article_Plots","RWA_LR_ALL_Accuracy_SkinData.pdf"),
+       dpi=300,width = 6*2,height = 6*4,units = "in")
+ggsave(filename = here("Article_Plots","RWA_LR_ALL_Accuracy_SkinData.eps"),
+       device="eps",dpi=300,width = 6*2,height = 6*4,units = "in")
 
 Combined_MSE %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=log(Sum_MSE),color=Method))+
+  ggplot(.,aes(x=Subsample_Size,y=log(Sum_MSE),color=Method,shape=Method,linetype=Method))+
   scale_x_continuous(labels =unique(Combined_MSE$Subsample_Size),
-                       breaks =unique(Combined_MSE$Subsample_Size)) +
-    geom_point(size=1.75)+geom_line(size=1)+
+                     breaks =unique(Combined_MSE$Subsample_Size)) +
+    geom_point(size=1.25)+geom_line(size=0.75)+
     scale_color_manual(values=Colors_All)+
-    theme_bw()+
-    xlab("r")+
-    ylab("log(Summed SMSE)")+expand_limits(y = 0)+
+    scale_linetype_manual(values=LineType_All)+
+    scale_shape_manual(values=ShapeType_All)+
+    xlab("r")+ylab("log(Summed SMSE)")+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+Theme_special()
+    theme_bw()+Theme_special_1()+guides(colour = guide_legend(nrow = 2))
 
-ggsave(filename = "RWA_LR_SkinData.pdf",dpi=300,width = 8,height = 6,units = "in")
-ggsave(filename = "RWA_LR_SkinData.eps",device="eps",dpi=300,width = 8,height = 6,units = "in")
+ggsave(filename = here("Article_Plots","RWA_LR_SMSE_SkinData.pdf"),
+       dpi=300,width = 8,height = 6,units = "in")
+ggsave(filename = here("Article_Plots","RWA_LR_SMSE_SkinData.eps"),
+       device="eps",dpi=300,width = 8,height = 6,units = "in")
 
-Theme_special_1<-function()
-{
-  theme(axis.text.x = element_text(color = "black",size=15,angle=45,hjust=0.75), #, vjust = 0.5
-        axis.text.y = element_text(color = "black",size=15), #, vjust = 0.5, hjust=1
-        strip.text = element_text(colour = "black",size = 16,face="bold"),
-        panel.grid.minor.x = element_blank(),
-        axis.title= element_text(color = "black",face = "bold",size = 18),
-        legend.text = element_text(color = "black", size=14),
-        legend.position = "bottom",
-        #legend.margin=margin(0,0,0,0),
-        #legend.box.margin=margin(-1,-1,-1,-1))
-        legend.key.width=unit(0.04,"npc"),
-        legend.margin = margin(), # pre-emptively set zero margins
-        legend.spacing.x = unit(0.2, "cm"))
-}
+Combined_Accuracy %>%
+  group_by(Metric,Method,Subsample_Size) %>%
+  summarise(Sum_Accuracy=mean(`Estimated Values`)) %>%
+  ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Method,shape=Method,linetype=Method))+
+  scale_x_continuous(labels =unique(Combined_Accuracy$Subsample_Size),
+                     breaks =unique(Combined_Accuracy$Subsample_Size)) +
+  geom_point(size=1.25)+geom_line(size=0.75)+
+  scale_color_manual(values=Colors_All)+
+  scale_linetype_manual(values=LineType_All)+
+  scale_shape_manual(values=ShapeType_All)+
+  xlab("r")+ylab("Average Accuracy of Y")+
+  scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
+  theme_bw()+guides(colour = guide_legend(nrow = 2))+Theme_special()
+
+ggsave(filename = here("Article_Plots","RWA_LR_Accuracy_SkinData.pdf"),
+       dpi=300,width = 8,height = 6,units = "in")
+ggsave(filename = here("Article_Plots","RWA_LR_Accuracy_SkinData.eps"),
+       device="eps",dpi=300,width = 8,height = 6,units = "in")
 
 Combined_MSE %>%
   filter(!(Method %in% c("Optimal subsampling mVc","Model Robust subsampling mVc"))) %>%
@@ -180,52 +275,7 @@ Combined_MSE %>%
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
     guides(colour = guide_legend(nrow = 2))+Theme_special_1()
 
-ggsave(filename = "Poster_RWA_LR_SkinData.eps",device="eps",dpi=300,width = 8,height = 6,units = "in")
-
-
-Combined_MSE[Combined_MSE$Method!="Random Sampling",] %>%
-  group_by(Metric,Method,Subsample_Size) %>%
-  summarise(Sum_MSE=sum(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=log(Sum_MSE),color=Method))+
-  scale_x_continuous(labels =unique(Combined_MSE$Subsample_Size) ,
-                       breaks =unique(Combined_MSE$Subsample_Size) )+
-    geom_point(size=1.75)+geom_line(size=1)+
-    scale_color_manual(values=Colors_All)+
-    theme_bw()+
-    xlab("r")+
-    ylab("log(Summed SMSE)")+expand_limits(y = 0)+
-    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+Theme_special()
-
-Combined_Accuracy %>%
-  group_by(Metric,Method,Subsample_Size) %>%
-  summarise(Sum_Accuracy=mean(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Method))+
-  scale_x_continuous(labels =unique(Combined_Accuracy$Subsample_Size),
-                       breaks =unique(Combined_Accuracy$Subsample_Size)) +
-    geom_point(size=1.75)+geom_line(size=1)+
-    scale_color_manual(values=Colors_All)+
-    theme_bw()+
-    xlab("r")+
-    ylab("Average Accuracy of Y")+
-    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+Theme_special()
-
-ggsave(filename = "RWA_LR_SkinData_Accuracy.pdf",dpi=300,width = 8,height = 6,units = "in")
-ggsave(filename = "RWA_LR_SkinData_Accuracy.eps",device="eps",dpi=300,width = 8,height = 6,units = "in")
-
-Combined_Accuracy[Combined_Accuracy$Method!="Random Sampling",] %>%
-  group_by(Metric,Method,Subsample_Size) %>%
-  summarise(Sum_Accuracy=mean(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=Sum_Accuracy,color=Method))+
-  scale_x_continuous(labels =unique(Combined_Accuracy$Subsample_Size) ,
-                       breaks =unique(Combined_Accuracy$Subsample_Size) )+
-    geom_point(size=1.75)+geom_line(size=1)+
-    scale_color_manual(values=Colors_All)+
-    theme_bw()+
-    xlab("r")+
-    ylab("Average Accuracy of Y")+
-    scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_Accuracy$Subsample_Size))/2))+
-    guides(colour = guide_legend(nrow = 2))+Theme_special()
+ggsave(filename = here("Article_Plots","Poster_RWA_LR_SkinData.eps"),
+       device="eps",dpi=300,width = 8,height = 6,units = "in")
 ```
 
