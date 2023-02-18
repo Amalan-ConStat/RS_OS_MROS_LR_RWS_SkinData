@@ -6,10 +6,10 @@ library(LaplacesDemon)
 enableJIT(1)
 
 # Load the No Scaled Data----
-load(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","Random_Sampling","Init.RData"))
+load(here("Non_Identical_r0","Simulation_Setup","Analysis","Random_Sampling","Init.RData"))
 
 # Load the Random Sample----
-load(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","Random_Sampling","Run_RandomSample.RData"))
+load(here("Non_Identical_r0","Simulation_Setup","Analysis","Random_Sampling","Run_RandomSample.RData"))
 
 # All Models ----
 for (i in 1:length(All_Models)) 
@@ -28,11 +28,11 @@ for (i in 1:length(All_Models))
   
   # Save the Results ----
   save(Est_Param_RandomSample,Utility_RandomSample,SelectedData_RandomSample,Bias_RandomSample,
-       file = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","Random_Sampling",
+       file = here("Non_Identical_r0","Simulation_Setup","Analysis","Random_Sampling",
                    "Results",paste0("Random_Sample_output_",i,".RData")))
   
   save(Est_Param_RandomSample,Utility_RandomSample,SelectedData_RandomSample,Bias_RandomSample,
-       file = here("Non_Identical_r0","Outputs","Classical","Random_Sampling",
+       file = here("Non_Identical_r0","Outputs","Random_Sampling",
                    paste0("Random_Sample_output_",i,".RData")))
 }
 

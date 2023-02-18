@@ -6,11 +6,11 @@ library(LaplacesDemon)
 enableJIT(1)
 
 # Load the Scaled Data----
-load(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Init.RData"))
+load(here("Non_Identical_r0","Simulation_Setup","Analysis","OSMAC","Init.RData"))
 #load(here("Init.RData"))
 
 # Load the OSMAC Sample----
-load(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","OSMAC","Run_OSMAC.RData"))
+load(here("Non_Identical_r0","Simulation_Setup","Analysis","OSMAC","Run_OSMAC.RData"))
 #load(here("Run_OSMAC.RData"))
 
 # All Models ----

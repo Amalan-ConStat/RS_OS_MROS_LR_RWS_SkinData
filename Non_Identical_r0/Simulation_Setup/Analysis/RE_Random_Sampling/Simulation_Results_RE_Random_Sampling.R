@@ -6,10 +6,10 @@ library(LaplacesDemon)
 enableJIT(1)
 
 # Load the Scaled Data----
-load(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","RE_Random_Sampling","Init.RData"))
+load(here("Non_Identical_r0","Simulation_Setup","Analysis","RE_Random_Sampling","Init.RData"))
 
 # Load the Rare Event Random Sample----
-load(here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","RE_Random_Sampling","RE_RandomSample.RData"))
+load(here("Non_Identical_r0","Simulation_Setup","Analysis","RE_Random_Sampling","RE_RandomSample.RData"))
 
 # All Models ----
 for (i in 1:length(All_Models)) 
@@ -28,11 +28,11 @@ for (i in 1:length(All_Models))
   
   # Save the Results ---
   save(Est_Param_RE_RandomSample,Utility_RE_RandomSample,Bias_RE_RandomSample,SelectedData_RE_RandomSample,
-       file = here("Non_Identical_r0","Simulation_Setup","Classical","Analysis","RE_Random_Sampling",
+       file = here("Non_Identical_r0","Simulation_Setup","Analysis","RE_Random_Sampling",
                    "Results",paste0("RE_Random_Sample_output_",i,".RData")))
   
   save(Est_Param_RE_RandomSample,Utility_RE_RandomSample,Bias_RE_RandomSample,SelectedData_RE_RandomSample,
-       file = here("Non_Identical_r0","Outputs","Classical","RE_Random_Sampling",
+       file = here("Non_Identical_r0","Outputs","RE_Random_Sampling",
                    paste0("RE_Random_Sample_output_",i,".RData")))
 }
 
