@@ -232,7 +232,7 @@ Combined_MSE %>%
     scale_color_manual(values=Colors_All)+
     scale_linetype_manual(values=LineType_All)+
     scale_shape_manual(values=ShapeType_All)+
-    xlab("r")+ylab("log(Summed SMSE)")+
+    xlab("r")+ylab("log(SSMSE)")+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
     theme_bw()+Theme_special_1()+guides(colour = guide_legend(nrow = 2))
 
@@ -271,7 +271,7 @@ Combined_MSE %>%
     scale_color_manual(values=Colors_All[c(1,3,5)])+
     theme_bw()+
     xlab("r")+
-    ylab("log(Summed SMSE)")+expand_limits(y = 0)+
+    ylab("log(SSMSE)")+expand_limits(y = 0)+
     scale_y_continuous(breaks = scales::pretty_breaks(n = length(unique(Combined_MSE$Subsample_Size))/2))+
     theme_bw()+Theme_special_1()+guides(colour = guide_legend(nrow = 2))
 
