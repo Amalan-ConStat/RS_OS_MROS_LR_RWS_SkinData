@@ -200,7 +200,7 @@ Combined_MSE %>%
     theme_bw()+Theme_special()+guides(colour = guide_legend(nrow = 2))
 
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_SMSE_SkinData.pdf"),
-       dpi=300,width = 6*2,height = 6*4,units = "in")
+       dpi=300,width = 6*2,height = 6*5,units = "in")
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_SMSE_SkinData.eps"),
        device="eps",dpi=300,width = 6*2,height = 6*4,units = "in")
 
@@ -218,7 +218,7 @@ Combined_Accuracy %>%
     theme_bw()+Theme_special()+guides(colour = guide_legend(nrow = 2))
       
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_Accuracy_SkinData.pdf"),
-       dpi=300,width = 6*2,height = 6*4,units = "in")
+       dpi=300,width = 6*2,height = 6*5,units = "in")
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_Accuracy_SkinData.eps"),
        device="eps",dpi=300,width = 6*2,height = 6*4,units = "in")
 
