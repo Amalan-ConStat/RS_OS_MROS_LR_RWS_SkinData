@@ -200,9 +200,9 @@ Combined_MSE %>%
     theme_bw()+Theme_special()+guides(colour = guide_legend(nrow = 2))
 
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_SMSE_SkinData.pdf"),
-       dpi=300,width = 6*2,height = 6*5,units = "in")
+       dpi=300,width = 6*2,height = 6*3,units = "in")
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_SMSE_SkinData.eps"),
-       device="eps",dpi=300,width = 6*2,height = 6*4,units = "in")
+       device="eps",dpi=300,width = 6*2,height = 6*3,units = "in")
 
 Combined_Accuracy %>%
     ggplot(.,aes(x=Subsample_Size,y=`Estimated Values`,color=Method,shape=Method,linetype=Method))+
@@ -218,9 +218,9 @@ Combined_Accuracy %>%
     theme_bw()+Theme_special()+guides(colour = guide_legend(nrow = 2))
       
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_Accuracy_SkinData.pdf"),
-       dpi=300,width = 6*2,height = 6*5,units = "in")
+       dpi=300,width = 6*2,height = 6*3,units = "in")
 ggsave(filename = here("Article_Plots","RWA_LR_ALL_Accuracy_SkinData.eps"),
-       device="eps",dpi=300,width = 6*2,height = 6*4,units = "in")
+       device="eps",dpi=300,width = 6*2,height = 6*3,units = "in")
 
 Combined_MSE %>%
   group_by(Metric,Method,Subsample_Size) %>%
