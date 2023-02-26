@@ -225,7 +225,7 @@ ggsave(filename = here("Article_Plots","RWA_LR_ALL_Accuracy_SkinData.eps"),
 Combined_MSE %>%
   group_by(Metric,Method,Subsample_Size) %>%
   summarise(Sum_MSE=sum(`Estimated Values`)) %>%
-  ggplot(.,aes(x=Subsample_Size,y=log(Sum_MSE),color=Method,shape=Method,linetype=Method))+
+  ggplot(.,aes(x=Subsample_Size,y=log(Sum_MSE/8),color=Method,shape=Method,linetype=Method))+
   scale_x_continuous(labels =unique(Combined_MSE$Subsample_Size),
                      breaks =unique(Combined_MSE$Subsample_Size)) +
     geom_point(size=1.25)+geom_line(size=0.75)+
