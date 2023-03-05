@@ -53,7 +53,7 @@ output:
 
 * Contains the simulation setup for the above mentioned subsampling methods based on the variety of models for the Big data and Rscripts to smoothly transfer methods and respective data.  
 
-### 2.2.1 Classical/R_Scripts
+### 2.2.1 R_Scripts
 
 We need to transfer two forms of data,
 1. Big Data set and other information essential for the methods.
@@ -63,7 +63,7 @@ We need to transfer two forms of data,
 
 #### 2.2.1.1 Setup_Data.R
 
-* Data stored in **Generate_Big_Data** is transferred to **Classical/Analysis**.
+* Data stored in **Generate_Big_Data** is transferred to **Analysis**.
 
 #### 2.2.1.2 Random_Sampling_Setup.R
 
@@ -85,7 +85,7 @@ We need to transfer two forms of data,
 
 * The model robust optimal sub-sampling and a setup to apply these methods such that model parameters are estimated at each simulation and are applied for the big data.
 
-## 2.2.2 Classical/Analysis
+## 2.2.2 Analysis
 
 Each model related covariate data is separately used on each subsampling method individually.
 
@@ -140,7 +140,7 @@ Each model related covariate data is separately used on each subsampling method 
 
 * **OSMAC_Command.R** - R script to summarise the results from the optimal sub-sampling and model robust optimal sampling methods through the Rmarkdown file **OSMAC_Method.Rmd**.
 
-* **Summary_Rmarkdown.R** in the **Rmarkdown/Classical/Summary** folder compares the sub-sampling methods through Mean Squared Error through the **Best_Subsampling_Method.Rmd**.
+* **Summary_Rmarkdown.R** in the **Rmarkdown/Summary** folder compares the sub-sampling methods through Mean Squared Error through the **Best_Subsampling_Method.Rmd**.
 
 ## 2.5 htmloutputs
 
@@ -155,14 +155,14 @@ Each model related covariate data is separately used on each subsampling method 
 
 * Here, summaries from the Rmarkdown files **Best_Subsampling_Method.Rmd** are stored as html files. 
 
-### 2.6.1 Summary/Classical/Data/Efficiency
+### 2.6.1 Summary/Data/Efficiency
 
 * When running the Rmarkdown files **Random_Sampling.Rmd**, **RE_Random_Sampling.Rmd**, **OSMAC_Method.Rmd** and **OSMAC_Model_Free_Method.Rmd** summary data (MSE) are stored here.
 
-* Using these data files only summarising through the files in **Rmarkdown/Classical/Summary** occurs.
+* Using these data files only summarising through the files in **Rmarkdown/Summary** occurs.
 
 ## 2.7 Articles.Rmd, Publication.Rmd and Publication_Ready_Command.R
 
 * Use **Publication_Ready_command.R** to run **Publication.Rmd** on every model and its respective big data.
 
-* Use **Articles.Rmd** to generate plots relevant to the paper as pdf file **RWA_LR_SkinData.pdf**. 
+* Use **Articles.Rmd** to generate plots relevant to the paper as pdf file **Article_Plots/RWA_LR_SkinData.pdf**. 
